@@ -1,0 +1,10 @@
+{
+    "code": "admin",
+    "name": "مدیر سایت",
+    "role": "admin",
+    "class": null,
+    "password": "$2y$10$IS8fPSY8xDJpzRO69zBOW.OKzq9c/lKwuALDdRpsa33e4QLvWzBAS",
+    "must_change_password": false,
+    "created_at": "2026-10-16 22:32:45",
+    "results": []
+}

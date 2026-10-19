@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="گالری تصاویر فضاها و امکانات دبیرستان هاشمی نژاد ۲">
+    <title>ببین مدرسه رو! | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+        .gal-item { cursor: zoom-in; position: relative; border-radius: 1rem; overflow: hidden; }
+        .gal-item img { height: 200px; width: 100%; object-fit: cover; transition: transform .4s ease; }
+        .gal-item:hover img { transform: scale(1.08); }
+        .gal-item::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.35), transparent 40%); opacity: 0; transition: opacity .3s; }
+        .gal-item:hover::after { opacity: 1; }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-extrabold text-gray-800">خوش اومدین به بخش آشنایی با فضا و امکانات مدرسه</h1>
+        <p class="text-gray-500 mt-2">اینجا می‌خوایم بخش به بخش با کلیه امکانات مدرسه آشنا بشیم و یه چرخ کلی توی مدرسه بزنیم... روی هر عکس کلیک کنید تا بزرگ تر ببینید</p>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3 mb-8" id="section-tabs"></div>
+    <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+</main>
+
+<div id="lightbox" class="hidden fixed inset-0 z-[100] bg-black/85 items-center justify-center p-4 cursor-zoom-out">
+    <img id="lightbox-img" class="max-w-full max-h-full rounded-xl object-contain" alt="">
+    <button class="absolute top-4 left-4 text-white text-4xl" aria-label="بستن">&times;</button>
+</div>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/assets/js/admin-bar.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+let allItems = [], sections = [], currentSection = 'همه';
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await (await fetch('/files/api/content.php?action=get_gallery_sections')).json();
+        sections = res.data || [];
+        buildTabs();
+        const res2 = await (await fetch('/files/api/content.php?action=get_gallery')).json();
+        allItems = res2.data || [];
+        render();
+    } catch (e) {
+        document.getElementById('gallery-grid').innerHTML = '<p class="col-span-full text-center text-red-500 py-10">خطا در بارگذاری گالری.</p>';
+    }
+});
+function buildTabs() {
+    const tabs = document.getElementById('section-tabs');
+    tabs.innerHTML = ['همه', ...sections].map((s, i) => `
+        <button data-s="${esc(s)}" class="tab px-4 py-2 rounded-xl font-bold text-sm border transition ${i===0 ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100'}">${esc(s)}</button>`).join('');
+    tabs.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+        currentSection = b.dataset.s;
+        tabs.querySelectorAll('.tab').forEach(t => t.className = t.className.replace('bg-green-600 text-white border-green-600', 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100'));
+        b.className = b.className.replace('bg-white text-gray-700 border-gray-200 hover:bg-gray-100', 'bg-green-600 text-white border-green-600');
+        render();
+    }));
+}
+function render() {
+    const items = currentSection === 'همه' ? allItems : allItems.filter(x => x.section === currentSection);
+    const grid = document.getElementById('gallery-grid');
+    grid.innerHTML = items.map(g => `
+        <figure class="gal-item bg-white border" data-src="${esc(g.src)}" data-gallery-id="${g.id}" data-gallery-section="${esc(g.section)}">
+            <img src="${esc(g.src)}" alt="${esc(g.section)}" loading="lazy">
+        </figure>`).join('');
+    grid.querySelectorAll('.gal-item').forEach(f => f.addEventListener('click', () => openLightbox(f.dataset.src)));
+}
+</script>
+</body>
+</html>

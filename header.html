@@ -1,0 +1,49 @@
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-3">
+            <a href="/" class="flex items-center">
+                <img src="/files/uploads/site/logo-header.png" alt="دبیرستان هاشمی نژاد ۲" class="header-logo" id="site-logo">
+            </a>
+
+            <!-- منوی دسکتاپ -->
+            <nav class="hidden lg:flex items-center gap-5 text-sm font-semibold text-gray-700">
+                <a href="/home.html" data-nav="home">صفحه اصلی</a>
+                <a href="/gallery.html" data-nav="gallery">ببین مدرسه رو!</a>
+                <a href="/news/" data-nav="news">اخبار و گزارشات</a>
+                <a href="/staff.html" data-nav="staff">کادر آموزشی</a>
+                <a href="/about.html" data-nav="about">درباره ما</a>
+                <a href="/contact.html" data-nav="contact">ارتباط با ما</a>
+            </nav>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="/register.html" data-nav="register" class="hidden sm:inline-flex bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition shadow-sm text-sm">ثبت نام</a>
+                <div id="auth-container" class="flex items-center">
+                    <a id="login-btn" href="/auth/login.html" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 transition shadow-sm text-sm">ورود</a>
+                    <div id="user-menu" class="relative group hidden">
+                        <button class="flex items-center gap-2 font-semibold text-gray-700 cursor-pointer p-1">
+                            <i class="ph-fill ph-user-circle text-xl text-green-600"></i>
+                            <span id="header-username" class="text-sm">...</span>
+                            <i class="ph-bold ph-caret-down transition-transform duration-300 group-hover:rotate-180 text-xs"></i>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-44 bg-white rounded-lg shadow-xl border overflow-hidden opacity-0 pointer-events-none transition-opacity duration-300 group-hover:opacity-100 group-hover:pointer-events-auto z-50 text-sm">
+                            <a href="/profile.html" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">پروفایل</a>
+                            <a href="/azmoon/student.html" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">آزمون‌ها</a>
+                            <button id="logout-btn" class="w-full text-right px-4 py-3 text-red-600 hover:bg-gray-100 font-semibold">خروج</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="mobile-menu-btn" class="lg:hidden text-2xl text-gray-700" aria-label="منو"><i class="ph-fill ph-list"></i></button>
+            </div>
+        </div>
+        <!-- منوی موبایل -->
+        <nav id="mobile-menu" class="hidden lg:hidden pb-4 space-y-2 text-sm font-semibold text-gray-700">
+            <a href="/home.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100">صفحه اصلی</a>
+            <a href="/gallery.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100">ببین مدرسه رو!</a>
+            <a href="/news/" class="block px-3 py-2 rounded-lg hover:bg-gray-100">اخبار و گزارشات</a>
+            <a href="/staff.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100">کادر آموزشی</a>
+            <a href="/about.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100">درباره ما</a>
+            <a href="/contact.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100">ارتباط با ما</a>
+            <a href="/register.html" class="block px-3 py-2 rounded-lg bg-orange-500 text-white text-center">ثبت نام</a>
+        </nav>
+    </div>
+</header>

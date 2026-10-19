@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="فرم ثبت‌نام دانش‌آموزان جدید دبیرستان هاشمی نژاد ۲">
+    <title>فرم ثبت‌نام | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="w-full max-w-3xl mx-auto px-4 py-10 flex-grow">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-extrabold text-gray-800">فرم ثبت نام مدرسه</h1>
+        <p class="text-gray-500 mt-3 leading-7">دانش‌آموزانی که با آزمون‌های استعدادهای درخشان در این دبیرستان قبول شده‌اند، جهت تکمیل ثبت‌نام خود برای دریافت وقت مراجعه حضوری، فرم زیر را تکمیل نمایند.</p>
+        <p class="mt-3 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-xl px-4 py-3 text-sm leading-7">
+            <i class="ph-fill ph-warning-circle align-middle text-lg"></i>
+            لازم به ذکر است که ثبت‌نام در این مدرسه فقط از طریق آزمون‌های هماهنگ استعدادهای درخشان انجام می‌شود و بعد از قبولی در آزمون امکان ثبت‌نام می‌باشد.
+        </p>
+    </div>
+
+    <form id="reg-form" class="bg-white rounded-2xl shadow-xl border p-8 space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+                <label for="r-name" class="block mb-1 font-semibold text-sm">نام و نام خانوادگی دانش‌آموز *</label>
+                <input id="r-name" name="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label for="r-nc" class="block mb-1 font-semibold text-sm">کد ملی دانش‌آموز *</label>
+                <input id="r-nc" name="national_code" inputmode="numeric" maxlength="10" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label for="r-birth" class="block mb-1 font-semibold text-sm">تاریخ تولد (مثال ۱۳۹۲/۰۵/۱۲) *</label>
+                <input id="r-birth" name="birthdate" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label for="r-sphone" class="block mb-1 font-semibold text-sm">تلفن همراه دانش‌آموز *</label>
+                <input id="r-sphone" name="student_phone" inputmode="tel" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label for="r-pphone" class="block mb-1 font-semibold text-sm">تلفن همراه ولی دانش‌آموز *</label>
+                <input id="r-pphone" name="parent_phone" inputmode="tel" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label for="r-grade" class="block mb-1 font-semibold text-sm">متقاضی کدام پایه هستید؟ *</label>
+                <select id="r-grade" name="grade" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none bg-white">
+                    <option value="">انتخاب کنید...</option>
+                    <option value="هفتم">هفتم</option>
+                    <option value="هشتم">هشتم</option>
+                    <option value="نهم">نهم</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label for="r-address" class="block mb-1 font-semibold text-sm">آدرس منزل *</label>
+            <textarea id="r-address" name="address" rows="2" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"></textarea>
+        </div>
+        <div>
+            <label for="r-photo" class="block mb-1 font-semibold text-sm">عکس پرسلنی دانش‌آموز (اختیاری — حداکثر ۲۰ مگابایت)</label>
+            <input id="r-photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp"
+                   class="w-full p-3 border border-gray-300 rounded-lg file:mr-3 file:px-4 file:py-1 file:rounded-lg file:border-0 file:bg-green-100 file:text-green-800 file:font-bold">
+        </div>
+        <div id="reg-box" class="h-6 text-center font-bold text-sm"></div>
+        <button type="submit" class="w-full bg-green-600 text-white py-4 rounded-xl text-lg font-bold hover:bg-green-700 transition shadow-md flex items-center justify-center gap-2">
+            <i class="ph-bold ph-paper-plane-tilt text-xl"></i> ارسال
+        </button>
+    </form>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+function toEnDigits(s) {
+    return s.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+}
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('reg-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const box = document.getElementById('reg-box');
+        const fd = new FormData(form);
+        fd.set('national_code', toEnDigits(fd.get('national_code')).replace(/\D/g, ''));
+        ['student_phone', 'parent_phone'].forEach(k => fd.set(k, toEnDigits(fd.get(k)).replace(/\D/g, '')));
+        fd.append('action', 'submit_registration');
+
+        box.textContent = 'در حال ارسال...';
+        box.className = 'h-6 text-center font-bold text-sm text-gray-500';
+        try {
+            const r = await (await fetch('/files/api/content.php', { method: 'POST', body: fd })).json();
+            box.textContent = r.message;
+            box.className = 'h-6 text-center font-bold text-sm leading-6 ' + (r.success ? 'text-green-600' : 'text-red-600');
+            if (r.success) form.reset();
+        } catch (err) {
+            box.textContent = 'خطا در ارسال فرم. دوباره تلاش کنید.';
+            box.className = 'h-6 text-center font-bold text-sm text-red-600';
+        }
+    });
+});
+</script>
+</body>
+</html>

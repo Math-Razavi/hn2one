@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "name": "مرتضی پوردولت",
+        "role": "مدیر دبیرستان",
+        "subject": "ریاضی",
+        "photo": "/files/uploads/staff/20261018063240-0dd1951b43.png"
+    },
+    {
+        "id": 2,
+        "name": "عباس گندمی",
+        "role": "معاون اجرایی",
+        "subject": "فیزیک",
+        "photo": "/files/uploads/staff/executive-deputy.png"
+    },
+    {
+        "id": 3,
+        "name": "علیرضا حسینی روش",
+        "role": "معاون پژوهشی",
+        "subject": "ادبیات عرب",
+        "photo": "/files/uploads/staff/research-deputy.jpg"
+    },
+    {
+        "id": 4,
+        "name": "محمد مرادیان",
+        "role": "معاون پرورشی",
+        "subject": "تعلیم و تربیت اسلامی",
+        "photo": "/files/uploads/staff/moral-deputy.jpg"
+    },
+    {
+        "id": 5,
+        "name": "محمدصادق مقدم",
+        "role": "معاون آموزشی",
+        "subject": "علوم اجتماعی",
+        "photo": "/files/uploads/staff/edu-deputy.jpg"
+    }
+]

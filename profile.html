@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>پروفایل کاربری | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <script src="/assets/js/loading-orb.js" defer></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-grow">
+    <div id="loading" class="text-center py-16">
+        <hn-orb size="64" speed="750" motion="morph" class="text-green-600 mx-auto"></hn-orb>
+        <p class="text-lg font-semibold text-gray-500 mt-3">در حال بررسی دسترسی...</p>
+    </div>
+
+    <div id="need-login" class="hidden text-center py-16">
+        <i class="ph-duotone ph-lock-simple text-6xl text-red-300"></i>
+        <p class="text-2xl font-bold text-gray-600 mt-4">ابتدا وارد شوید.</p>
+        <a href="/auth/login.html" class="inline-flex mt-6 bg-green-600 text-white px-6 py-3 rounded-lg font-bold">رفتن به صفحه ورود</a>
+    </div>
+
+    <div id="profile-content" class="hidden space-y-6">
+        <!-- کارت کاربر -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 flex flex-col sm:flex-row items-center gap-6">
+            <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-5xl text-green-600 flex-shrink-0">
+                <i class="ph-fill ph-user"></i>
+            </div>
+            <div class="text-center sm:text-right">
+                <h2 id="u-name" class="text-3xl font-extrabold text-gray-800"></h2>
+                <div class="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
+                    <span id="u-role" class="px-3 py-1 rounded-full text-sm font-bold"></span>
+                    <span id="u-class" class="px-3 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-700 hidden"></span>
+                </div>
+                <p id="u-code" class="text-sm text-gray-500 mt-2 font-mono" dir="ltr"></p>
+            </div>
+        </div>
+
+        <!-- تغییر رمز -->
+        <div class="bg-white rounded-2xl shadow-lg border p-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><i class="ph-fill ph-password text-2xl text-green-600"></i> تغییر رمز عبور</h3>
+            <p class="text-sm text-gray-500 mb-4">برای امنیت بیشتر، پس از اولین ورود رمز خود را تغییر دهید.</p>
+            <form id="pw-form" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                <div>
+                    <label class="block mb-1 font-semibold text-sm">رمز فعلی</label>
+                    <input type="password" id="pw-current" dir="ltr" required class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block mb-1 font-semibold text-sm">رمز جدید (حداقل ۶ کاراکتر)</label>
+                    <input type="password" id="pw-new" dir="ltr" minlength="6" required class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <button type="submit" class="bg-green-600 text-white py-3 px-6 rounded-lg font-bold hover:bg-green-700 transition">تغییر رمز</button>
+            </form>
+            <div id="pw-box" class="text-center font-bold h-6 mt-3"></div>
+        </div>
+
+        <!-- دسترسی‌ها -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <a href="/azmoon/student.html" class="bg-teal-500 text-white p-6 rounded-2xl shadow-lg text-center hover:bg-teal-600 transition flex flex-col items-center gap-2">
+                <i class="ph-duotone ph-exam text-5xl"></i>
+                <h3 class="text-lg font-bold">آزمون‌های آنلاین</h3>
+            </a>
+            <a href="/classroom/student.html" class="bg-blue-600 text-white p-6 rounded-2xl shadow-lg text-center hover:bg-blue-700 transition flex flex-col items-center gap-2">
+                <i class="ph-duotone ph-video-camera text-5xl"></i>
+                <h3 class="text-lg font-bold">کلاس‌های مجازی</h3>
+            </a>
+            <a href="/home.html" class="bg-green-600 text-white p-6 rounded-2xl shadow-lg text-center hover:bg-green-700 transition flex flex-col items-center gap-2">
+                <i class="ph-duotone ph-house text-5xl"></i>
+                <h3 class="text-lg font-bold">بازگشت به صفحه اصلی</h3>
+            </a>
+        </div>
+    </div>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+const ROLE_LABELS = { admin: 'مدیر سایت', teacher: 'دبیر', student: 'دانش‌آموز' };
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const r = await (await fetch('/files/api/auth.php', { method: 'POST', body: new URLSearchParams({ action: 'me' }) })).json();
+        document.getElementById('loading').classList.add('hidden');
+        if (!r.success) {
+            document.getElementById('need-login').classList.remove('hidden');
+            return;
+        }
+        const u = r.data;
+        document.getElementById('profile-content').classList.remove('hidden');
+        document.getElementById('u-name').textContent = u.name;
+        const roleEl = document.getElementById('u-role');
+        roleEl.textContent = ROLE_LABELS[u.role] || u.role;
+        roleEl.className = 'px-3 py-1 rounded-full text-sm font-bold ' + (u.role === 'teacher' ? 'bg-teal-100 text-teal-700' : u.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700');
+        if (u.class) {
+            const cls = document.getElementById('u-class');
+            cls.textContent = 'کلاس: ' + u.class;
+            cls.classList.remove('hidden');
+        }
+        document.getElementById('u-code').textContent = 'کد کاربری: ' + u.code;
+    } catch (e) {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('need-login').classList.remove('hidden');
+    }
+
+    document.getElementById('pw-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const box = document.getElementById('pw-box');
+        const fd = new FormData();
+        fd.append('action', 'change_password');
+        fd.append('current_password', document.getElementById('pw-current').value);
+        fd.append('new_password', document.getElementById('pw-new').value);
+        fd.append('csrf_token', localStorage.getItem('csrf_token') || '');
+        const r = await (await fetch('/files/api/auth.php', { method: 'POST', body: fd })).json();
+        box.textContent = r.message;
+        box.className = 'text-center font-bold h-6 mt-3 ' + (r.success ? 'text-green-600' : 'text-red-600');
+        if (r.success) e.target.reset();
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="معرفی کادر آموزشی و اجرایی دبیرستان هاشمی نژاد ۲">
+    <title>کادر آموزشی | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <script src="/assets/js/loading-orb.js" defer></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+
+        /* ---------- باند نمایشی کادر: کاروسل دیترِه ---------- */
+        .staff-stage {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(120% 90% at 78% -10%, rgba(48, 133, 96, .34), transparent 55%),
+                radial-gradient(90% 120% at 8% 110%, rgba(43, 16, 85, .5), transparent 60%),
+                linear-gradient(135deg, #0c1220 0%, #10261f 52%, #0b1120 100%);
+        }
+        .staff-stage::before {
+            content: '';
+            position: absolute; z-index: -1;
+            inset: -18%;
+            background: conic-gradient(from 210deg, transparent 0deg, rgba(250, 204, 21, .09) 40deg, transparent 95deg, rgba(34, 197, 94, .09) 200deg, transparent 260deg);
+            animation: stage-sheen 34s linear infinite;
+        }
+        .staff-stage::after {
+            content: '';
+            position: absolute; inset: 0; z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+            opacity: .05;
+            pointer-events: none;
+        }
+        @keyframes stage-sheen { to { transform: rotate(360deg); } }
+
+        .stage-vignette {
+            position: absolute; inset: 0; z-index: 1; pointer-events: none;
+            background: radial-gradient(90% 75% at 50% 42%, transparent 55%, rgba(5, 9, 17, .55) 100%);
+        }
+
+        .dc-area {
+            --cw: 258px;
+            --ch: calc(var(--cw) / .82);
+            position: relative;
+            width: min(1100px, 100%);
+            height: calc(var(--ch) + 108px);
+            touch-action: pan-y;
+            cursor: grab;
+            -webkit-user-select: none; user-select: none;
+            overscroll-behavior-x: contain;
+        }
+        .dc-area.is-dragging { cursor: grabbing; }
+
+        .dc-card {
+            position: absolute;
+            top: 36px;
+            border-radius: 1.05rem;
+            will-change: transform;
+            cursor: pointer;
+            -webkit-user-select: none; user-select: none;
+        }
+        .dc-card canvas { width: var(--cw); height: var(--ch); display: block; border-radius: 1.05rem; }
+        .dc-card.is-front canvas { box-shadow: 0 0 0 2px rgba(250, 204, 21, .5), 0 0 46px -8px rgba(250, 204, 21, .3); }
+        .dc-card:not(.is-front) canvas { box-shadow: 0 16px 34px -16px rgba(0, 0, 0, .6); }
+        .dc-cap { padding: 10px 4px 0; text-align: center; transition: opacity .5s ease; }
+        .dc-name { display: block; font-weight: 800; font-size: clamp(.7rem, 1.4vw, .95rem); color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dc-role { display: block; margin-top: 1px; font-weight: 700; font-size: clamp(.58rem, 1.05vw, .76rem); color: rgba(148, 163, 184, .75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dc-card.is-front .dc-name { color: #fbbf24; }
+        .dc-card.is-front .dc-role { color: rgba(253, 230, 138, .85); }
+
+        .stage-dots .dot {
+            width: 9px; height: 9px; border-radius: 9999px;
+            background: rgba(248, 250, 252, .28);
+            transition: all .4s ease; cursor: pointer; border: none; padding: 0;
+        }
+        .stage-dots .dot:hover { background: rgba(248, 250, 252, .55); }
+        .stage-dots .dot.is-active { background: #fbbf24; width: 26px; pointer-events: none; }
+
+        .dc-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .staff-stage::before { animation: none; }
+        }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="flex-grow w-full">
+    <!-- باند سینمایی کادر آموزشی: کاروسل دیترِه -->
+    <section class="staff-stage" aria-label="نمای کاروسلی کادر آموزشی و اجرایی مدرسه">
+        <div class="stage-vignette"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 sm:pt-16 text-center">
+            <p class="text-[13px] font-bold tracking-wide text-amber-400/90 flex items-center justify-center gap-2">
+                <i class="ph-fill ph-medal text-base"></i>
+                دبیرستان دوره اول استعدادهای درخشان شهید هاشمی‌نژاد ۲
+            </p>
+            <h1 class="mt-3 text-slate-50 font-black leading-tight" style="font-size: clamp(1.55rem, 4vw, 2.7rem)">
+                کادر آموزشی و اجرایی مدرسه
+            </h1>
+            <p class="mt-2 text-slate-300/80 text-sm sm:text-base">از مدیر و معاونین تا دبیران — بکشید یا روی کارت‌ها کلیک کنید</p>
+        </div>
+
+        <div id="deck" class="dc-area mx-auto">
+            <div class="dc-loading"><hn-orb size="54" speed="750" motion="morph" class="text-amber-400"></hn-orb></div>
+        </div>
+
+        <div class="stage-dots relative z-10 flex justify-center items-center gap-2 pt-6 pb-10" id="stage-dots"></div>
+    </section>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/assets/js/admin-bar.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const stage = document.getElementById('deck');
+    const dotsEl = document.getElementById('stage-dots');
+    try {
+        const res = await (await fetch('/files/api/content.php?action=get_staff')).json();
+        const people = res.data;
+        if (!people.length) {
+            stage.innerHTML = '<p class="text-center text-slate-300/70" style="line-height: 300px">اطلاعاتی ثبت نشده است.</p>';
+            return;
+        }
+        buildDitherCarousel(people);
+    } catch (e) {
+        stage.innerHTML = '<p class="text-center text-red-400/90" style="line-height: 300px">خطا در بارگذاری.</p>';
+    }
+
+    /* =========================================================
+       پورت وانیلای DitherCarousel (بدون وابستگی)
+       نگاشت پراب‌های مرجع: cell=7.5 | focusBand=.32 | twist=.8 |
+       rise=.79 | cardRatio=.82 | gooey=.4 | ditherShape='dots'
+       ========================================================= */
+    const P = { cell: 7.5, focusBand: .32, twist: .8, rise: .79, ratio: .82, gooey: .4 };
+    const BAYER4 = [15, 135, 45, 165, 195, 75, 225, 105, 60, 180, 30, 150, 240, 120, 210, 90];
+
+    const STATS = [];            // [{el, canvas, g, src, lum, meta}]
+    let PEOPLE = [];
+    let focus = 0, target = 0;   // خانه شناور وسط
+    let timer = null, dragging = false, dragStartX = 0, dragBase = 0, dragDx = 0, lastWheel = 0;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function metrics() {
+        const W = stage.clientWidth || 640;
+        const ch = W < 640 ? 234 : 336;
+        const cw = Math.round(ch * P.ratio);
+        return {
+            W, ch, cw,
+            spacing: Math.round(cw * (W < 640 ? .88 : .8)),
+            cell: Math.max(4.4, P.cell * (cw / 260)),
+            riseAmp: W < 640 ? 18 : Math.round(P.rise * 34),
+            twist: 7 * P.twist,
+        };
+    }
+
+    function buildDitherCarousel(people) {
+        PEOPLE = people;
+        const m = metrics();
+        stage.style.setProperty('--cw', m.cw + 'px');
+        stage.innerHTML = '';
+
+        PEOPLE.forEach((s, i) => {
+            const el = document.createElement('div');
+            el.className = 'dc-card';
+            el.dataset.staffId = s.id;
+            el.dataset.staffName = s.name || '';
+            el.dataset.member = i;
+            el.setAttribute('role', 'button');
+            el.setAttribute('aria-label', s.name || 'کادر مدرسه');
+            el.innerHTML = '<canvas></canvas><div class="dc-cap"><span class="dc-name"></span><span class="dc-role"></span></div>';
+            el.querySelector('.dc-name').textContent = s.name || '';
+            el.querySelector('.dc-role').textContent = s.role || '';
+            el.addEventListener('click', () => {
+                if (Math.abs(dragDx) > 8) return;                       // پس از درگ واقعی، کلیک نیاید
+                if (+el.dataset.member !== Math.round(target)) setTarget(i);
+            });
+            stage.appendChild(el);
+
+            const canvas = el.querySelector('canvas');
+            const g = canvas.getContext('2d');
+            STATS.push({ el, canvas, g, src: null, lum: null });
+        });
+
+        dotsEl.innerHTML = PEOPLE.map((s, i) =>
+            `<button type="button" class="dot" data-di="${i}" aria-label="${esc(s.name || 'نفر ' + (i + 1))}"></button>`).join('');
+        dotsEl.querySelectorAll('.dot').forEach(b => b.addEventListener('click', () => setTarget(+b.dataset.di)));
+
+        rebuildSources();
+
+        target = focus = 0;
+        layout();
+        requestAnimationFrame(loop);
+
+        window.addEventListener('resize', () => {
+            const mm = metrics();
+            stage.style.setProperty('--cw', mm.cw + 'px');
+            rebuildSources();
+        });
+
+        if (!reduceMotion) {
+            startTimer();
+            stage.addEventListener('mouseenter', stopTimer);
+            stage.addEventListener('mouseleave', () => { if (!dragging) startTimer(); });
+        }
+        stage.addEventListener('focusin', stopTimer);
+        stage.addEventListener('focusout', () => { if (!dragging) startTimer(); });
+
+        /* کشیدن / سوایپ افقی */
+        stage.addEventListener('pointerdown', (e) => {
+            dragging = true; dragDx = 0;
+            dragStartX = e.clientX; dragBase = target;
+            try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+        });
+        stage.addEventListener('pointermove', (e) => {
+            if (!dragging) return;
+            dragDx = e.clientX - dragStartX;
+            target = dragBase - dragDx / metrics().spacing;
+        });
+        const endDrag = () => {
+            if (!dragging) return;
+            dragging = false;
+            setTarget(Math.round(target));
+        };
+        stage.addEventListener('pointerup', endDrag);
+        stage.addEventListener('pointercancel', endDrag);
+
+        /* بخش اسکرول عمودی محفوظ است؛ با Tab/کلیک/کشیدن جابه‌جا می‌شود */
+        stage.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const now = Date.now();
+            if (now - lastWheel < 200) return;
+            lastWheel = now;
+            setTarget(Math.round(target) + (e.deltaY > 0 || e.deltaX > 0 ? 1 : -1));
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stopTimer(); else if (!dragging) startTimer();
+        });
+    }
+
+    /* ساخت دوباره بوم منبع‌ها (لود/resize) + دوباره‌سازی مش luma */
+    function rebuildSources() {
+        const m = metrics();
+        STATS.forEach((c, i) => {
+            const s = PEOPLE[i] || {};
+            c.canvas.width = m.cw; c.canvas.height = m.ch;
+            c.src = makeSource(s, m.cw, m.ch, () => { c.lum = null; });
+            c.lum = null;
+        });
+    }
+
+    function makeSource(s, w, h, onLoad) {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const g = c.getContext('2d');
+        g.fillStyle = '#0d1322'; g.fillRect(0, 0, w, h);
+        if (s.photo) {
+            const img = new Image();
+            img.decoding = 'async';
+            img.src = s.photo;
+            const draw = () => { try { cover(g, img, w, h); if (onLoad) onLoad(); } catch (e) {} };
+            if (img.complete && img.naturalWidth) draw();
+            img.onload = draw;
+        } else {
+            g.fillStyle = '#132a21';
+            g.font = `800 ${Math.round(w * .3)}px Vazirmatn, sans-serif`;
+            g.textAlign = 'center'; g.textBaseline = 'middle';
+            const first = (s.name || '?').trim().split(/\s+/)[0];
+            g.fillText(first ? first.charAt(0) : '?', w / 2, h * .44);
+        }
+        return c;
+    }
+    function cover(g, img, w, h) {
+        const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+        if (!iw || !ih) return;
+        const s = Math.max(w / iw, h / ih);
+        g.drawImage(img, (w - iw * s) / 2, Math.max(0, (h - ih * s) / 5), iw * s, ih * s);
+    }
+
+    function buildLuma(card, cellPx) {
+        const w = card.canvas.width, h = card.canvas.height;
+        const nx = Math.max(1, Math.ceil(w / cellPx));
+        const ny = Math.max(1, Math.ceil(h / cellPx));
+        const t = document.createElement('canvas');
+        t.width = nx; t.height = ny;
+        const tg = t.getContext('2d');
+        try {
+            tg.drawImage(card.src, 0, 0, nx, ny);
+            const data = tg.getImageData(0, 0, nx, ny).data;
+            const a = new Float32Array(nx * ny);
+            for (let i = 0; i < a.length; i++) {
+                a[i] = (0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2]) / 255;
+            }
+            return { nx, ny, a };
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function loop() {
+        if (reduceMotion) focus = target;
+        else focus += (target - focus) * .14;
+        layout();
+        requestAnimationFrame(loop);
+    }
+
+    /* فاصله حلقه‌ای کارت k از خانه وسط (پیوسته) */
+    function rel(k) {
+        const n = STATS.length;
+        let r = (k - focus) % n;
+        if (r < -n / 2) r += n; else if (r > n / 2) r -= n;
+        return r;
+    }
+
+    function layout() {
+        const m = metrics();
+        let frontK = 0;
+        for (let k = 1; k < STATS.length; k++) {
+            if (Math.abs(rel(k)) < Math.abs(rel(frontK))) frontK = k;
+        }
+        STATS.forEach((c, k) => {
+            const r = rel(k), absR = Math.abs(r);
+            const x = m.W / 2 + r * m.spacing;
+            const y = Math.min(absR * 6, 24);
+            const rot = Math.max(-m.twist, Math.min(m.twist, r * m.twist * .8));
+            const sc = 1 - Math.min(absR, 3.6) * .05;
+
+            c.el.style.left = (x - m.cw / 2) + 'px';
+            c.el.style.transform = `translateY(${y}px) rotate(${rot}deg) scale(${sc})`;
+            c.el.style.zIndex = String(100 - Math.round(absR * 10));
+            const d = Math.min(Math.max((absR - P.focusBand) / 1.6, 0), 1);
+            c.el.classList.toggle('is-front', k === frontK);
+            c.el.querySelector('.dc-cap').style.opacity = String(Math.max(0, 1 - d * 1.45));
+            renderCard(c, m, d);
+        });
+        dotsEl.querySelectorAll('.dot').forEach((el, i) => el.classList.toggle('is-active', i === frontK));
+    }
+
+    /* رسم یک کارت: d=0 → عکس رنگی کامل | d→1 → دیتره نقطه‌ای تک‌رنگ */
+    function renderCard(c, m, d) {
+        const g = c.g, w = c.canvas.width, h = c.canvas.height;
+        g.setTransform(1, 0, 0, 1, 0, 0);
+        g.clearRect(0, 0, w, h);
+        g.fillStyle = '#0d1322';
+        g.fillRect(0, 0, w, h);
+
+        if (c.src) {
+            g.save();
+            roundClip(g, w, h, 16);
+            g.globalAlpha = 1 - d * .96;
+            try { g.filter = `grayscale(${(d * .92).toFixed(2)})`; } catch (e) {}
+            g.drawImage(c.src, 0, 0, w, h);
+            try { g.filter = 'none'; } catch (e) {}
+            g.restore();
+            g.globalAlpha = 1;
+        }
+
+        const alpha = Math.pow(d, 1.18) * .97;
+        if (alpha > .012) {
+            if (!c.lum) c.lum = buildLuma(c, m.cell);
+            g.save();
+            roundClip(g, w, h, 16);
+            g.globalAlpha = alpha;
+            g.fillStyle = '#e9e4d8';
+            if (c.lum) {
+                const cs = m.cell, nx = c.lum.nx, ny = c.lum.ny, a = c.lum.a;
+                for (let yy = 0; yy < ny; yy++) {
+                    for (let xx = 0; xx < nx; xx++) {
+                        const v = a[yy * nx + xx];
+                        const b = BAYER4[(yy & 3) * 4 + (xx & 3)] / 255;
+                        if (v <= b * .85) continue;
+                        const rr = Math.min(cs * .5 * Math.pow(v, .75), cs * .52);
+                        if (rr < .5) continue;
+                        g.beginPath();
+                        g.arc((xx + .5) * cs, (yy + .5) * cs, rr, 0, 7);
+                        g.fill();
+                    }
+                }
+                /* گوئی: محوِ لبه‌های افقی برای پیوند کارت‌های مجاور */
+                const bw = Math.round(w * .15);
+                const edge = g.createLinearGradient(0, 0, bw, 0);
+                edge.addColorStop(0, `rgba(11,17,30,${(.42 * P.gooey).toFixed(2)})`);
+                edge.addColorStop(1, 'rgba(11,17,30,0)');
+                g.fillStyle = edge;
+                g.fillRect(0, 0, bw, h);
+                g.save();
+                g.translate(w, 0); g.scale(-1, 1);
+                g.fillRect(0, 0, bw, h);
+                g.restore();
+            }
+            g.restore();
+        }
+    }
+
+    function roundClip(g, w, h, r) {
+        g.beginPath();
+        g.moveTo(r, 0);
+        g.arcTo(w, 0, w, h, r);
+        g.arcTo(w, h, 0, h, r);
+        g.arcTo(0, h, 0, 0, r);
+        g.arcTo(0, 0, w, 0, r);
+        g.closePath();
+        g.clip();
+    }
+
+    function setTarget(i) {
+        target = i;
+        restartTimer();
+    }
+    function startTimer() {
+        if (reduceMotion || timer) return;
+        timer = setInterval(() => {
+            if (dragging) return;
+            setTarget((target + 1) % STATS.length);
+        }, 3400);
+    }
+    function stopTimer() {
+        if (timer) clearInterval(timer);
+        timer = null;
+    }
+    function restartTimer() {
+        if (reduceMotion) return;
+        stopTimer();
+        startTimer();
+    }
+});
+</script>
+</body>
+</html>

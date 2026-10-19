@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>پنل دبیر — آزمون آنلاین | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/bold/style.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+        .radio-label { transition: all 0.2s ease-in-out; }
+        input[type="radio"]:checked + .radio-label { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
+        input[type="radio"]:checked + .radio-label .ph-circle { display: none; }
+        input[type="radio"]:not(:checked) + .radio-label .ph-check-circle { display: none; }
+        .loading-spinner { border-top-color: #16a34a; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .tab-btn { padding: 0.65rem 1.15rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.95rem; color: #475569; background: #f1f5f9; display: flex; align-items: center; gap: 0.5rem; transition: all .2s; white-space: nowrap; }
+        .tab-btn:hover { background: #e2e8f0; }
+        .tab-btn.active { background: #16a34a; color: #fff; box-shadow: 0 4px 12px rgba(22,163,74,.35); }
+        .tab-btn i { font-size: 1.15rem; }
+        .chip { font-size: .8rem; padding: .15rem .6rem; border-radius: 9999px; }
+        .tool-card { background: #fff; border-radius: 1.25rem; box-shadow: 0 10px 25px rgba(0,0,0,.07); padding: 1.75rem; }
+        .field-label { font-weight: 700; color: #1f2937; margin-bottom: .4rem; display: block; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" onload="window._katexReady = true; if (window._renderKaTeX) window._renderKaTeX();" onerror="window._katexReady = false;"></script>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="w-full max-w-3xl mx-auto px-4 sm:px-6 flex-grow py-10">
+    <div id="status-container" class="text-center py-10">
+        <div class="loading-spinner h-12 w-12 rounded-full border-4 border-t-4 border-gray-200 mx-auto mb-4"></div>
+        <p class="text-lg font-semibold text-gray-600">در حال بررسی دسترسی...</p>
+    </div>
+
+    <div id="tabs-nav" class="hidden mb-8 bg-white rounded-2xl shadow border p-2 flex gap-2 flex-wrap justify-center">
+        <button data-tab="exams" class="tab-btn active"><i class="ph-fill ph-file-text"></i>آزمون‌های آنلاین</button>
+        <button data-tab="lesson" class="tab-btn"><i class="ph-duotone ph-note-pencil"></i>طرح درس هوشمند</button>
+        <button data-tab="quizgen" class="tab-btn"><i class="ph-duotone ph-robot"></i>آزمون‌ساز هوشمند</button>
+        <button data-tab="bank" class="tab-btn"><i class="ph-duotone ph-stack"></i>بانک سؤالات</button>
+        <button data-tab="formula" class="tab-btn"><i class="ph-duotone ph-function"></i>بانک فرمول‌ها</button>
+    </div>
+
+    <div id="exam-list-view" class="hidden space-y-6">
+        <header class="flex flex-wrap justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-800">آزمون‌های آنلاین من</h1>
+                <p class="text-lg text-gray-500 mt-2">آزمون جدید بسازید یا نتایج آزمون‌های قبلی را ببینید.</p>
+            </div>
+            <button id="create-new-exam-btn" class="bg-green-600 text-white px-5 py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2 shadow-md">
+                <i class="ph-bold ph-plus-circle text-xl"></i>
+                <span>ساخت آزمون جدید</span>
+            </button>
+        </header>
+        <div id="exam-list-container" class="w-full bg-white rounded-2xl shadow-xl p-6 space-y-4"></div>
+    </div>
+
+    <div id="exam-detail-view" class="hidden space-y-6"></div>
+
+    <div id="lesson-view" class="hidden space-y-6"></div>
+    <div id="quizgen-view" class="hidden space-y-6"></div>
+    <div id="bank-view" class="hidden space-y-6"></div>
+    <div id="formula-view" class="hidden space-y-6"></div>
+</main>
+
+<div id="toast-container" class="fixed bottom-6 right-6 space-y-2 z-[90]"></div>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+const AZMOON_API = '/files/api/azmoon.php';
+const TEACHER_API = '/files/api/teacher.php';
+const ROLE_LABELS = { admin: 'مدیر سایت', teacher: 'دبیر', student: 'دانش‌آموز' };
+let currentTeacherCode = null;
+let myRole = 'teacher';
+let currentViewingExamId = null;
+let questionCounter = 0;
+
+const statusContainer = document.getElementById('status-container');
+const toastContainer = document.getElementById('toast-container');
+const examListView = document.getElementById('exam-list-view');
+const examDetailView = document.getElementById('exam-detail-view');
+const lessonView = document.getElementById('lesson-view');
+const quizgenView = document.getElementById('quizgen-view');
+const bankView = document.getElementById('bank-view');
+const formulaView = document.getElementById('formula-view');
+const examListContainer = document.getElementById('exam-list-container');
+
+function showToast(text, isError = false) {
+    const toast = document.createElement('div');
+    toast.textContent = text;
+    toast.className = `px-6 py-3 rounded-lg shadow-lg text-white ${isError ? 'bg-red-600' : 'bg-green-600'}`;
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+}
+
+function csrf() { return localStorage.getItem('csrf_token') || ''; }
+
+function showAccessError(message) {
+    statusContainer.innerHTML = `<div class="text-center py-10">
+        <i class="ph-fill ph-warning-octagon text-6xl text-red-500 mb-4"></i>
+        <p class="text-2xl font-bold text-red-600 mb-4">${message}</p>
+        <a href="/auth/login.html" class="bg-green-600 text-white py-3 px-6 rounded-lg text-lg font-bold hover:bg-green-700 inline-block">بازگشت به صفحه ورود</a></div>`;
+    examListView.classList.add('hidden');
+    examDetailView.classList.add('hidden');
+}
+
+function showListView() {
+    examDetailView.classList.add('hidden');
+    examListView.classList.remove('hidden');
+    statusContainer.classList.add('hidden');
+    loadAllExams();
+}
+
+function showDetailView(mode = 'create', examId = null) {
+    examListView.classList.add('hidden');
+    examDetailView.classList.remove('hidden');
+    currentViewingExamId = examId;
+    renderDetailView(mode, examId);
+}
+
+async function loadAllExams() {
+    examListContainer.innerHTML = '<p class="text-center text-gray-500">در حال بارگذاری لیست آزمون‌ها...</p>';
+    try {
+        const response = await fetch(AZMOON_API + '?action=get_exams');
+        const result = await response.json();
+        if (!result.success) throw new Error(result.message);
+
+        examListContainer.innerHTML = '';
+        const exams = result.data || [];
+        if (exams.length > 0) {
+            exams.forEach(exam => {
+                const row = document.createElement('div');
+                row.className = 'bg-gray-50 p-4 rounded-lg flex flex-wrap justify-between items-center gap-3 border hover:bg-gray-100 cursor-pointer transition';
+                row.innerHTML = `
+                    <div>
+                        <p class="font-bold text-lg">${esc(exam.title)}</p>
+                        <div class="flex flex-wrap gap-2 mt-1 text-sm">
+                            <span class="text-gray-500">${jDate(exam.created_at)}</span>
+                            <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${exam.class === 'all' ? 'همه کلاس‌ها' : 'کلاس ' + esc(exam.class)}</span>
+                            <span>${exam.status === 'active'
+                                ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">فعال</span>'
+                                : '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">غیرفعال</span>'}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button data-toggle="${exam.id}" data-status="${exam.status === 'active' ? 'inactive' : 'active'}"
+                            class="px-3 py-2 rounded-lg text-sm font-bold ${exam.status === 'active' ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
+                            ${exam.status === 'active' ? 'غیرفعال کردن' : 'فعال‌سازی'}</button>
+                        <button data-delete="${exam.id}" class="px-3 py-2 rounded-lg text-sm font-bold bg-red-100 text-red-700 hover:bg-red-200">حذف</button>
+                        <span class="text-green-600 font-bold bg-green-100 px-3 py-1 rounded-full">مشاهده جزئیات</span>
+                    </div>`;
+                row.addEventListener('click', (e) => {
+                    if (e.target.closest('[data-toggle]') || e.target.closest('[data-delete]')) return;
+                    showDetailView('view', exam.id);
+                });
+                examListContainer.appendChild(row);
+            });
+            examListContainer.querySelectorAll('[data-toggle]').forEach(btn => btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const fd = new FormData();
+                fd.append('action', 'set_exam_status');
+                fd.append('exam_id', btn.dataset.toggle);
+                fd.append('status', btn.dataset.status);
+                fd.append('csrf_token', csrf());
+                const r = await (await fetch(AZMOON_API, { method: 'POST', body: fd })).json();
+                showToast(r.message, !r.success);
+                if (r.success) loadAllExams();
+            }));
+            examListContainer.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!confirm('آزمون و تمام نتایج آن حذف شود؟ این عمل غیرقابل بازگشت است.')) return;
+                const fd = new FormData();
+                fd.append('action', 'delete_exam');
+                fd.append('exam_id', btn.dataset.delete);
+                fd.append('csrf_token', csrf());
+                const r = await (await fetch(AZMOON_API, { method: 'POST', body: fd })).json();
+                showToast(r.message, !r.success);
+                if (r.success) loadAllExams();
+            }));
+        } else {
+            examListContainer.innerHTML = '<p class="text-center text-gray-500">هیچ آزمونی یافت نشد. اولین آزمون خود را بسازید!</p>';
+        }
+    } catch (error) {
+        examListContainer.innerHTML = `<p class="text-center text-red-500">${esc(error.message || 'خطا در بارگذاری لیست آزمون‌ها.')}</p>`;
+    }
+}
+
+async function renderDetailView(mode, examId) {
+    const isViewMode = mode === 'view';
+    let detailHTML = '';
+
+    if (isViewMode) {
+        examDetailView.innerHTML = '<div class="text-center py-10"><div class="loading-spinner h-12 w-12 rounded-full border-4 border-t-4 border-gray-200 mx-auto mb-4"></div><p class="text-lg font-semibold text-gray-600">در حال بارگذاری جزئیات آزمون...</p></div>';
+        try {
+            const result = await (await fetch(AZMOON_API + '?action=get_results&exam_id=' + encodeURIComponent(examId))).json();
+            if (!result.success) throw new Error(result.message);
+            const exam = result.data.exam;
+            const results = result.data.results;
+
+            detailHTML = `
+                <header class="flex justify-between items-center flex-wrap gap-3">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-gray-800">${esc(exam.title)}</h1>
+                        <p class="text-lg text-gray-500 mt-2">${exam.class === 'all' ? 'همه کلاس‌ها' : 'کلاس ' + esc(exam.class)} — ${exam.keys.length} سوال</p>
+                    </div>
+                    <button id="back-to-list-btn" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">بازگشت به لیست</button>
+                </header>
+                <div class="w-full bg-white rounded-2xl shadow-xl p-8">
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-bold text-gray-800">فایل‌های آزمون</h3>
+                        <a href="${esc(exam.pdf)}" download="${esc(exam.pdf_name)}" class="flex items-center justify-between bg-gray-50 p-3 rounded-lg border hover:bg-gray-100 transition"><span class="font-semibold text-gray-700">دفترچه سوالات: ${esc(exam.pdf_name)}</span><i class="ph-bold ph-download-simple text-xl text-green-600"></i></a>
+                        ${exam.answer_key ? `<a href="${esc(exam.answer_key)}" download="${esc(exam.answer_key_name)}" class="flex items-center justify-between bg-gray-50 p-3 rounded-lg border hover:bg-gray-100 transition"><span class="font-semibold text-gray-700">پاسخنامه تشریحی: ${esc(exam.answer_key_name)}</span><i class="ph-bold ph-download-simple text-xl text-green-600"></i></a>` : ''}
+                    </div>
+                    <hr class="my-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">کلید سوالات</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
+                            ${exam.keys.map((key, index) => `<div class="bg-green-50 p-2 rounded-lg text-center border border-green-200"><span class="text-sm text-green-700">سوال ${index + 1}</span><p class="font-bold text-lg text-green-900">${jKey(key)}</p></div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full bg-white rounded-2xl shadow-xl p-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800">نتایج شرکت‌کنندگان (${results.length} نفر)</h2>
+                        <button id="clear-results-btn" class="bg-red-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-red-700">حذف همه نتایج</button>
+                    </div>
+                    <div class="space-y-3" id="results-list">
+                        ${results.length ? results.map((res, i) => `
+                            <div class="bg-gray-50 p-4 rounded-lg flex flex-wrap justify-between items-center gap-3 border">
+                                <div>
+                                    <span class="font-bold">${i + 1}. ${esc(res.student_name)}</span>
+                                    <span class="text-sm text-gray-500 mr-2">کلاس ${esc(res.student_class || '—')}</span>
+                                    <span class="text-sm text-gray-400 mr-2">${jDate(res.created_at)}</span>
+                                </div>
+                                <span class="text-green-700 font-bold bg-green-100 px-4 py-1 rounded-full">${res.score} از ${res.total}</span>
+                            </div>`).join('')
+                        : '<p class="text-center text-gray-500 py-4">هنوز هیچ نتیجه‌ای ثبت نشده است.</p>'}
+                    </div>
+                </div>`;
+        } catch (error) {
+            showToast('خطا در بارگذاری جزئیات آزمون!', true);
+            detailHTML = `<p class="text-red-500 text-center">${esc(error.message || 'خطا')}</p><div class="text-center mt-4"><button onclick="showListView()" class="bg-gray-200 px-4 py-2 rounded-lg font-bold">بازگشت</button></div>`;
+        }
+    } else {
+        detailHTML = `
+            <header class="flex justify-between items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-gray-800">ساخت آزمون جدید</h1>
+                    <p class="text-lg text-gray-500 mt-2">اطلاعات آزمون جدید را وارد کنید.</p>
+                </div>
+                <button id="back-to-list-btn" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">بازگشت به لیست</button>
+            </header>
+            <div class="w-full bg-white rounded-2xl shadow-xl p-8">
+                <form id="create-exam-form" class="space-y-6"></form>
+            </div>`;
+    }
+
+    examDetailView.innerHTML = detailHTML;
+    addDetailViewEventListeners(mode);
+}
+
+// کلیدها را فارسی نمایش بده
+function jKey(k) { return String(k).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+function addDetailViewEventListeners(mode) {
+    document.getElementById('back-to-list-btn').addEventListener('click', showListView);
+
+    if (mode === 'view') {
+        document.getElementById('clear-results-btn').addEventListener('click', async () => {
+            if (!confirm('آیا مطمئن هستید که می‌خواهید نتایج این آزمون حذف شوند؟ این عمل غیرقابل بازگشت است.')) return;
+            const fd = new FormData();
+            fd.append('action', 'clear_results');
+            fd.append('exam_id', currentViewingExamId);
+            fd.append('csrf_token', csrf());
+            const r = await (await fetch(AZMOON_API, { method: 'POST', body: fd })).json();
+            showToast(r.message, !r.success);
+            if (r.success) renderDetailView('view', currentViewingExamId);
+        });
+    } else {
+        const createForm = document.getElementById('create-exam-form');
+        createForm.innerHTML = `
+            <div>
+                <label for="exam-title-input" class="text-xl font-bold text-gray-800 mb-3 block">۱. عنوان آزمون <span class="text-red-500">*</span></label>
+                <input type="text" id="exam-title-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="مثال: آزمون میان‌ترم فصل اول" required>
+            </div>
+            <div class="sm:w-64">
+                <label for="exam-class-input" class="text-xl font-bold text-gray-800 mb-3 block">۲. کلاس هدف</label>
+                <select id="exam-class-input" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-green-500 outline-none">
+                    <option value="all">همه کلاس‌ها</option>
+                    <option value="۷-۱">هفتم - ۱</option>
+                    <option value="۷-۲">هفتم - ۲</option>
+                    <option value="۷-۳">هفتم - ۳</option>
+                    <option value="۸-۱">هشتم - ۱</option>
+                    <option value="۸-۲">هشتم - ۲</option>
+                    <option value="۸-۳">هشتم - ۳</option>
+                    <option value="۹-۱">نهم - ۱</option>
+                    <option value="۹-۲">نهم - ۲</option>
+                    <option value="۹-۳">نهم - ۳</option>
+                </select>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-3">۳. بارگذاری دفترچه آزمون (PDF) <span class="text-red-500">*</span></h2>
+                <label for="exam-file" class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition">
+                    <i class="ph-duotone ph-upload-simple text-4xl text-gray-500 mb-2"></i>
+                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">برای آپلود دفترچه سوالات کلیک کنید</span></p>
+                    <p id="file-name-display" class="mt-2 text-sm font-bold text-green-600"></p>
+                </label>
+                <input id="exam-file" type="file" class="hidden" accept=".pdf,application/pdf" required>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-3">۴. بارگذاری پاسخنامه تشریحی (اختیاری)</h2>
+                <label for="answer-key-file" class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition">
+                    <i class="ph-duotone ph-file-pdf text-4xl text-gray-500 mb-2"></i>
+                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">برای آپلود پاسخنامه تشریحی کلیک کنید</span></p>
+                    <p id="answer-key-file-name-display" class="mt-2 text-sm font-bold text-green-600"></p>
+                </label>
+                <input id="answer-key-file" type="file" class="hidden" accept=".pdf,application/pdf">
+            </div>
+            <hr>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-3">۵. ثبت کلید سوالات</h2>
+                <div id="questions-container" class="space-y-6"></div>
+                <button type="button" id="add-question-btn" class="w-full mt-6 border-2 border-dashed border-gray-300 text-gray-500 py-3 rounded-lg font-bold hover:bg-gray-100 transition">+ افزودن سوال</button>
+                <button type="submit" class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg text-lg font-bold hover:bg-green-700 transition shadow-md">ذخیره و فعالسازی آزمون</button>
+            </div>`;
+
+        questionCounter = 0;
+        addQuestion(); addQuestion();
+
+        document.getElementById('add-question-btn').addEventListener('click', addQuestion);
+        document.getElementById('questions-container').addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-question-btn') || e.target.closest('.remove-question-btn')) {
+                e.target.closest('.question-block').remove();
+                renumberQuestions();
+            }
+        });
+        document.getElementById('exam-file').addEventListener('change', handleFileSelect);
+        document.getElementById('answer-key-file').addEventListener('change', handleFileSelect);
+        createForm.addEventListener('submit', handleCreateExamSubmit);
+    }
+}
+
+function renumberQuestions() {
+    document.querySelectorAll('#questions-container .question-block').forEach((b, i) => {
+        b.querySelector('label.text-lg').textContent = 'کلید سوال ' + (i + 1);
+    });
+}
+
+function addQuestion() {
+    questionCounter++;
+    const qName = `key${questionCounter}`;
+    const qBlock = document.createElement('div');
+    qBlock.className = 'question-block border-t pt-6';
+    const optionsHtml = [1, 2, 3, 4].map(i => `<div><input type="radio" id="key-${qName}-${i}" name="${qName}" value="${i}" class="hidden" required><label for="key-${qName}-${i}" class="radio-label cursor-pointer flex items-center justify-center p-4 border-2 rounded-lg gap-2"><i class="ph-bold ph-circle text-2xl"></i><i class="ph-fill ph-check-circle text-2xl"></i><span class="font-semibold">${i}</span></label></div>`).join('');
+    qBlock.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+            <label class="text-lg font-bold">کلید سوال ${questionCounter}</label>
+            <button type="button" class="remove-question-btn text-red-500 font-semibold">حذف</button>
+        </div>
+        <div class="grid grid-cols-4 gap-3">${optionsHtml}</div>`;
+    document.getElementById('questions-container').appendChild(qBlock);
+}
+
+function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const isExamFile = e.target.id === 'exam-file';
+    const displayEl = document.getElementById(isExamFile ? 'file-name-display' : 'answer-key-file-name-display');
+    displayEl.textContent = 'فایل: ' + file.name;
+}
+
+async function handleCreateExamSubmit(e) {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const examTitle = document.getElementById('exam-title-input').value.trim();
+    const examClass = document.getElementById('exam-class-input').value;
+    if (!examTitle) { showToast('لطفاً عنوان آزمون را وارد کنید.', true); return; }
+
+    const examFileInput = document.getElementById('exam-file');
+    if (!examFileInput.files.length) { showToast('لطفاً دفترچه سوالات را انتخاب کنید.', true); return; }
+
+    const keys = Array.from(document.querySelectorAll('.question-block')).map(block => {
+        const qName = block.querySelector('input[type="radio"]').name;
+        return document.querySelector(`input[name="${qName}"]:checked`)?.value;
+    });
+    if (keys.includes(undefined) || !keys.length) { showToast('لطفاً کلید همه سوالات را مشخص کنید.', true); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'در حال ذخیره...';
+
+    const formData = new FormData();
+    formData.append('action', 'create_exam');
+    formData.append('title', examTitle);
+    formData.append('class', examClass);
+    formData.append('pdf', examFileInput.files[0]);
+    formData.append('keys', JSON.stringify(keys.map(Number)));
+    const keyFile = document.getElementById('answer-key-file').files[0];
+    if (keyFile) formData.append('answer_key', keyFile);
+    formData.append('csrf_token', csrf());
+
+    try {
+        const result = await (await fetch(AZMOON_API, { method: 'POST', body: formData })).json();
+        if (!result.success) throw new Error(result.message);
+        showToast('آزمون با موفقیت فعال شد!');
+        showListView();
+    } catch (error) {
+        showToast(error.message || 'خطا در ذخیره آزمون!', true);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'ذخیره و فعالسازی آزمون';
+    }
+}
+
+// ================== تب‌ها و ابزارهای هوشمند ==================
+function switchTab(name) {
+    statusContainer.classList.add('hidden');
+    [examListView, examDetailView, lessonView, quizgenView, bankView, formulaView].forEach(v => v.classList.add('hidden'));
+    document.querySelectorAll('#tabs-nav .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    document.getElementById('tabs-nav').classList.remove('hidden');
+    if (name === 'exams') { examListView.classList.remove('hidden'); loadAllExams(); }
+    if (name === 'lesson') { lessonView.classList.remove('hidden'); initLessonTab(); loadLessonArchive(); }
+    if (name === 'quizgen') { quizgenView.classList.remove('hidden'); initQuizGenTab(); loadQuizArchive(); }
+    if (name === 'bank') { bankView.classList.remove('hidden'); initBankTab(); loadQuestionBank(); }
+    if (name === 'formula') { formulaView.classList.remove('hidden'); initFormulaTab(); loadFormulas(); }
+}
+
+// رندر ساده‌ی متن تولیدی هوش مصنوعی (## و # و پاراگراف)
+function mdLite(text) {
+    return esc(text).split(/\n/).map(raw => {
+        const t = raw.trim();
+        if (!t) return '<div class="h-2"></div>';
+        if (t.startsWith('## ')) return '<h3 class="text-lg font-extrabold text-green-700 mt-4 mb-1">' + t.slice(3) + '</h3>';
+        if (t.startsWith('# ')) return '<h3 class="text-xl font-extrabold text-gray-800 mt-4 mb-1">' + t.slice(2) + '</h3>';
+        return '<p class="leading-8">' + t + '</p>';
+    }).join('');
+}
+
+async function apiPost(action, params) {
+    const fd = new FormData();
+    fd.append('action', action);
+    fd.append('csrf_token', csrf());
+    Object.entries(params || {}).forEach(([k, v]) => fd.append(k, v));
+    return (await fetch(TEACHER_API, { method: 'POST', body: fd })).json();
+}
+
+// ---------- ۱) طرح درس هوشمند ----------
+function initLessonTab() {
+    if (lessonView.dataset.built) return;
+    lessonView.dataset.built = '1';
+    lessonView.innerHTML = `
+        <header>
+            <h1 class="text-3xl font-extrabold text-gray-800">طرح درس هوشمند</h1>
+            <p class="text-lg text-gray-500 mt-2">با کمک هوش مصنوعی، طرح درس کامل و اصولی برای کلاس شما تولید می‌شود.</p>
+        </header>
+        <div class="tool-card">
+            <form id="lesson-form" class="space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div><label class="field-label">پایه</label>
+                        <select name="grade" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                            <option value="هفتم">هفتم</option><option value="هشتم">هشتم</option><option value="نهم">نهم</option></select></div>
+                    <div class="sm:col-span-2"><label class="field-label">موضوع درس <span class="text-red-500">*</span></label>
+                        <input name="topic" required placeholder="مثال: تبدیل‌های هندسی" class="w-full p-3 border border-gray-300 rounded-lg"></div>
+                </div>
+                <div><label class="field-label">مدت کلاس (دقیقه)</label>
+                    <input name="duration" type="number" min="15" max="180" value="45" class="w-40 p-3 border border-gray-300 rounded-lg" dir="ltr"></div>
+                <div><label class="field-label">اهداف و نکات ویژه (اختیاری)</label>
+                    <textarea name="goals" rows="3" placeholder="مثال: تمرکز روی کاربرد در زندگی روزمره" class="w-full p-3 border border-gray-300 rounded-lg leading-8"></textarea></div>
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2 shadow-md">
+                    <i class="ph-duotone ph-sparkle text-xl"></i>تولید طرح درس</button>
+            </form>
+            <div id="lesson-result" class="hidden mt-6 border-t pt-5"></div>
+        </div>
+        <div class="tool-card">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">آرشیو طرح‌های درس من</h2>
+            <div id="lesson-archive" class="space-y-3"></div>
+        </div>`;
+    document.getElementById('lesson-form').addEventListener('submit', handleLessonGenerate);
+}
+
+async function loadLessonArchive() {
+    const box = document.getElementById('lesson-archive');
+    if (!box) return;
+    box.innerHTML = '<p class="text-center text-gray-400 text-sm">در حال بارگذاری...</p>';
+    try {
+        const r = await (await fetch(TEACHER_API + '?action=lesson_plans')).json();
+        if (!r.success) throw new Error(r.message);
+        const plans = r.data || [];
+        box.innerHTML = plans.length ? '' : '<p class="text-center text-gray-500 py-3 text-sm">هنوز طرح درسی ساخته نشده است.</p>';
+        plans.forEach(p => {
+            const row = document.createElement('details');
+            row.className = 'bg-gray-50 border rounded-xl p-4 open:shadow-inner';
+            row.innerHTML = `
+                <summary class="cursor-pointer flex flex-wrap justify-between items-center gap-2 font-bold text-gray-800">
+                    <span>${esc(p.topic)} <span class="chip bg-blue-100 text-blue-700">پایه ${esc(p.grade)}</span></span>
+                    <span class="flex items-center gap-2 text-sm font-normal text-gray-500">${jDate(p.created_at)}
+                        <button type="button" data-del="${p.id}" class="text-red-500 font-bold hover:underline">حذف</button></span>
+                </summary>
+                <div class="mt-3 leading-8 text-gray-700 text-sm">${mdLite(p.content)}</div>`;
+            row.querySelector('[data-del]').addEventListener('click', async () => {
+                if (!confirm('این طرح درس حذف شود؟')) return;
+                const res = await apiPost('lesson_plan_delete', { plan_id: p.id });
+                showToast(res.message, !res.success);
+                if (res.success) loadLessonArchive();
+            });
+            box.appendChild(row);
+        });
+    } catch (e) {
+        box.innerHTML = `<p class="text-center text-red-500 text-sm">${esc(e.message || 'خطا در بارگذاری آرشیو.')}</p>`;
+    }
+}
+
+async function handleLessonGenerate(e) {
+    e.preventDefault();
+    const f = e.target, btn = f.querySelector('button[type=submit]');
+    const resultBox = document.getElementById('lesson-result');
+    btn.disabled = true;
+    const original = btn.innerHTML;
+    btn.innerHTML = '<div class="loading-spinner h-5 w-5 rounded-full border-2 border-t-2 border-white/40 mx-auto"></div> در حال تولید (ممکن است تا ۱ دقیقه طول بکشد)...';
+    resultBox.classList.add('hidden');
+    try {
+        const r = await apiPost('ai_lesson_plan', {
+            grade: f.grade.value,
+            topic: f.topic.value.trim(),
+            duration: f.duration.value,
+            goals: f.goals.value.trim(),
+        });
+        if (!r.success) throw new Error(r.message);
+        showToast(r.message);
+        resultBox.innerHTML = `
+            <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                <h3 class="text-lg font-extrabold text-gray-800">${esc(r.data.topic)} <span class="chip bg-green-100 text-green-700">پایه ${esc(r.data.grade)}</span></h3>
+                <span class="text-sm text-gray-400">ذخیره‌شده در آرشیو ✓</span>
+            </div>
+            <div class="leading-8 text-gray-700 text-sm">${mdLite(r.data.content)}</div>`;
+        resultBox.classList.remove('hidden');
+        loadLessonArchive();
+    } catch (err) {
+        showToast(err.message || 'خطا در تولید طرح درس.', true);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+    }
+}
+
+// ---------- ۲) آزمون‌ساز هوشمند ----------
+function initQuizGenTab() {
+    if (quizgenView.dataset.built) return;
+    quizgenView.dataset.built = '1';
+    quizgenView.innerHTML = `
+        <header>
+            <h1 class="text-3xl font-extrabold text-gray-800">آزمون‌ساز هوشمند</h1>
+            <p class="text-lg text-gray-500 mt-2">آزمون چندبخشی حرفه‌ای بسازید، ویرایش کنید و خروجی HTML بگیرید.</p>
+        </header>
+        <div class="tool-card">
+            <form id="quizgen-form" class="space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="sm:col-span-2"><label class="field-label">عنوان آزمون <span class="text-red-500">*</span></label>
+                        <input name="title" required placeholder="مثال: آزمون فصل ۴ ریاضی" class="w-full p-3 border border-gray-300 rounded-lg"></div>
+                    <div><label class="field-label">پایه</label>
+                        <select name="grade" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                            <option value="هفتم">هفتم</option><option value="هشتم">هشتم</option><option value="نهم">نهم</option></select></div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="field-label mb-0">بخش‌های آزمون</label>
+                        <button type="button" id="add-section-btn" class="text-green-600 font-bold text-sm border border-green-200 rounded-lg px-3 py-1.5 hover:bg-green-50">+ افزودن بخش</button>
+                    </div>
+                    <div id="quiz-sections" class="space-y-3"></div>
+                </div>
+                <div><label class="field-label">ملاحظات معلم به هوش مصنوعی (اختیاری)</label>
+                    <textarea name="note" rows="2" placeholder="مثال: سؤال آخر ترکیبی و چالشی باشد" class="w-full p-3 border border-gray-300 rounded-lg leading-8"></textarea></div>
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2 shadow-md">
+                    <i class="ph-duotone ph-robot text-xl"></i>تولید آزمون با هوش مصنوعی</button>
+            </form>
+            <div id="quizgen-result" class="hidden mt-6 border-t pt-5"></div>
+        </div>
+        <div class="tool-card">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">آزمون‌های بایگانی‌شده من</h2>
+            <div id="quiz-archive" class="space-y-3"></div>
+        </div>`;
+    document.getElementById('add-section-btn').addEventListener('click', () => addQuizSection());
+    addQuizSection();
+    document.getElementById('quiz-sections').addEventListener('click', (e) => {
+        const del = e.target.closest('[data-remove-section]');
+        if (del) del.closest('.quiz-section-row').remove();
+        // اگر همه بخش‌ها حذف شد، یکی خالی اضافه کن
+        if (!document.querySelector('.quiz-section-row')) addQuizSection();
+    });
+    document.getElementById('quizgen-form').addEventListener('submit', handleQuizGenerate);
+}
+
+function addQuizSection(data = {}) {
+    const i = document.querySelectorAll('.quiz-section-row').length + 1;
+    const row = document.createElement('div');
+    row.className = 'quiz-section-row border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3';
+    row.innerHTML = `
+        <div class="flex justify-between items-center">
+            <span class="font-bold text-gray-700 text-sm">${esc(data.name || ('بخش ' + i))}</span>
+            <button type="button" data-remove-section class="text-red-500 font-bold text-sm">حذف بخش</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div><label class="text-xs font-bold text-gray-500">نام بخش</label><input name="sec_name" value="${esc(data.name || '')}" class="w-full p-2 border border-gray-300 rounded-lg"></div>
+            <div class="sm:col-span-2"><label class="text-xs font-bold text-gray-500">موضوع <span class="text-red-500">*</span></label>
+                <input name="sec_topic" required value="${esc(data.topic || '')}" placeholder="مثال: تبادل‌های هندسی" class="w-full p-2 border border-gray-300 rounded-lg"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+            <div><label class="text-xs font-bold text-gray-500">نوع سؤال</label>
+                <select name="sec_type" class="w-full p-2 border border-gray-300 rounded-lg bg-white">
+                    <option value="چهارگزینه‌ای">چهارگزینه‌ای</option><option value="تشریحی">تشریحی</option><option value="جای خالی">جای خالی</option></select></div>
+            <div><label class="text-xs font-bold text-gray-500">دشواری</label>
+                <select name="sec_difficulty" class="w-full p-2 border border-gray-300 rounded-lg bg-white">
+                    <option value="آسان">آسان</option><option value="متوسط">متوسط</option><option value="دشوار">دشوار</option></select></div>
+            <div><label class="text-xs font-bold text-gray-500">تعداد سؤال (۱ تا ۳۰)</label>
+                <input name="sec_count" type="number" min="1" max="30" value="${esc(data.count || 5)}" dir="ltr" class="w-full p-2 border border-gray-300 rounded-lg"></div>
+        </div>`;
+    if (data.name) row.querySelector('input[name=sec_name]').value = data.name;
+    if (data.type) row.querySelector('select[name=sec_type]').value = data.type;
+    if (data.difficulty) row.querySelector('select[name=sec_difficulty]').value = data.difficulty;
+    document.getElementById('quiz-sections').appendChild(row);
+}
+
+async function loadQuizArchive() {
+    const box = document.getElementById('quiz-archive');
+    if (!box) return;
+    box.innerHTML = '<p class="text-center text-gray-400 text-sm">در حال بارگذاری...</p>';
+    try {
+        const r = await (await fetch(TEACHER_API + '?action=quiz_designs')).json();
+        if (!r.success) throw new Error(r.message);
+        const quizzes = r.data || [];
+        box.innerHTML = quizzes.length ? '' : '<p class="text-center text-gray-500 py-3 text-sm">هنوز آزمونی بایگانی نشده است.</p>';
+        quizzes.forEach(q => {
+            const row = document.createElement('details');
+            row.className = 'bg-gray-50 border rounded-xl p-4';
+            row.innerHTML = `
+                <summary class="cursor-pointer flex flex-wrap justify-between items-center gap-2 font-bold text-gray-800">
+                    <span>${esc(q.title)} <span class="chip bg-blue-100 text-blue-700">پایه ${esc(q.grade)}</span><span class="chip bg-gray-200 text-gray-600">${(q.sections || []).length} بخش</span></span>
+                    <span class="flex items-center gap-2 text-sm font-normal text-gray-500">${jDate(q.created_at)}
+                        <button type="button" data-export class="text-green-600 font-bold hover:underline">خروجی HTML</button>
+                        <button type="button" data-del="${q.id}" class="text-red-500 font-bold hover:underline">حذف</button></span>
+                </summary>
+                <div class="mt-3 leading-8 text-gray-700 text-sm">${mdLite(q.content)}</div>`;
+            row.querySelector('[data-export]').addEventListener('click', () => exportQuizHtml(q.id, q.title));
+            row.querySelector('[data-del]').addEventListener('click', async () => {
+                if (!confirm('این آزمون بایگانی حذف شود؟')) return;
+                const res = await apiPost('quiz_design_delete', { quiz_id: q.id });
+                showToast(res.message, !res.success);
+                if (res.success) loadQuizArchive();
+            });
+            box.appendChild(row);
+        });
+    } catch (e) {
+        box.innerHTML = `<p class="text-center text-red-500 text-sm">${esc(e.message || 'خطا در بارگذاری آرشیو.')}</p>`;
+    }
+}
+
+async function handleQuizGenerate(e) {
+    e.preventDefault();
+    const f = e.target, btn = f.querySelector('button[type=submit]');
+    const rows = Array.from(document.querySelectorAll('.quiz-section-row'));
+    const sections = rows.map(r => ({
+        name: r.querySelector('[name=sec_name]').value.trim(),
+        topic: r.querySelector('[name=sec_topic]').value.trim(),
+        type: r.querySelector('[name=sec_type]').value,
+        difficulty: r.querySelector('[name=sec_difficulty]').value,
+        count: Number(r.querySelector('[name=sec_count]').value),
+    }));
+    for (const s of sections) { if (!s.topic) { showToast('موضوع همه بخش‌ها را پر کنید.', true); return; } }
+    btn.disabled = true;
+    const original = btn.innerHTML;
+    btn.innerHTML = '<div class="loading-spinner h-5 w-5 rounded-full border-2 border-t-2 border-white/40 mx-auto"></div> در حال طراحی آزمون (ممکن است تا ۲ دقیقه طول بکشد)...';
+    const resultBox = document.getElementById('quizgen-result');
+    resultBox.classList.add('hidden');
+    try {
+        const r = await apiPost('ai_quiz', {
+            title: f.title.value.trim(),
+            grade: f.grade.value,
+            note: f.note.value.trim(),
+            sections: JSON.stringify(sections),
+        });
+        if (!r.success) throw new Error(r.message);
+        showToast(r.message);
+        showQuizResult(r.data);
+        loadQuizArchive();
+    } catch (err) {
+        showToast(err.message || 'خطا در تولید آزمون.', true);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+    }
+}
+
+let currentQuizForSave = { id: '', title: '', grade: 'هفتم' };
+function showQuizResult(q) {
+    currentQuizForSave = { id: q.id || '', title: q.title, grade: q.grade || 'هفتم' };
+    const box = document.getElementById('quizgen-result');
+    box.innerHTML = `
+        <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+            <h3 class="text-lg font-extrabold text-gray-800">${esc(q.title)} <span class="chip bg-green-100 text-green-700">پایه ${esc(q.grade)}</span></h3>
+            <div class="flex gap-2">
+                <button type="button" id="quiz-save-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700">ذخیره تغییرات</button>
+                <button type="button" id="quiz-export-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700">خروجی HTML</button>
+            </div>
+        </div>
+        <textarea id="quiz-content-editor" rows="18" class="w-full p-4 border border-gray-300 rounded-lg leading-8 text-sm leading-8" dir="rtl">${esc(q.content)}</textarea>
+        <p class="text-xs text-gray-400 mt-2">متن را می‌توانید ویرایش کنید و با «ذخیره تغییرات» در آرشیو به‌روزرسانی شود.</p>`;
+    box.classList.remove('hidden');
+    document.getElementById('quiz-export-btn').addEventListener('click', () => {
+        const id = currentQuizForSave.id;
+        if (id) return exportQuizHtml(id, currentQuizForSave.title);
+        // اگر هنوز ذخیره نشده، اول ذخیره کن بعد خروجی بگیر
+        document.getElementById('quiz-save-btn').click();
+        setTimeout(() => exportQuizHtml(currentQuizForSave.id, currentQuizForSave.title), 800);
+    });
+    document.getElementById('quiz-save-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('quiz-save-btn');
+        btn.disabled = true;
+        const r = await apiPost('quiz_save', {
+            quiz_id: currentQuizForSave.id,
+            title: currentQuizForSave.title,
+            grade: currentQuizForSave.grade,
+            content: document.getElementById('quiz-content-editor').value,
+        });
+        btn.disabled = false;
+        showToast(r.message, !r.success);
+        if (r.success && r.data?.id) { currentQuizForSave.id = r.data.id; loadQuizArchive(); }
+    });
+}
+
+async function exportQuizHtml(id, title) {
+    try {
+        const res = await fetch(TEACHER_API + '?action=quiz_export_html&quiz_id=' + encodeURIComponent(id));
+        const txt = await res.text();
+        if (txt.trim().startsWith('{')) {
+            const j = JSON.parse(txt);
+            showToast(j.message || 'خطا در خروجی HTML.', true);
+            return;
+        }
+        const blob = new Blob([txt], { type: 'text/html;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = (title || 'quiz').replace(/[\\\/:*?"<>|]/g, '-') + '.html';
+        document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) {
+        showToast('خطا در دریافت خروجی HTML.', true);
+    }
+}
+
+// ---------- ۳) بانک سؤالات اشتراکی ----------
+function initBankTab() {
+    if (bankView.dataset.built) return;
+    bankView.dataset.built = '1';
+    bankView.innerHTML = `
+        <header>
+            <h1 class="text-3xl font-extrabold text-gray-800">بانک سؤالات اشتراکی</h1>
+            <p class="text-lg text-gray-500 mt-2">سؤالات همه دبیران در یک بانک مشترک — با هم تجربه انباشته می‌سازیم.</p>
+        </header>
+        <div class="tool-card">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">افزودن سؤال جدید</h2>
+            <form id="bank-form" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div><label class="field-label">پایه</label>
+                        <select name="grade" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                            <option value="هفتم">هفتم</option><option value="هشتم">هشتم</option><option value="نهم">نهم</option></select></div>
+                    <div><label class="field-label">موضوع</label>
+                        <input name="topic" placeholder="مثال: نسبت‌های مثلثاتی" class="w-full p-3 border border-gray-300 rounded-lg"></div>
+                    <div><label class="field-label">دشواری</label>
+                        <select name="difficulty" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                            <option value="آسان">آسان</option><option value="متوسط" selected>متوسط</option><option value="دشوار">دشوار</option></select></div>
+                </div>
+                <div><label class="field-label">متن سؤال <span class="text-red-500">*</span></label>
+                    <textarea name="question" rows="3" required class="w-full p-3 border border-gray-300 rounded-lg leading-8"></textarea></div>
+                <div><label class="field-label">پاسخ <span class="text-red-500">*</span></label>
+                    <textarea name="answer" rows="3" required class="w-full p-3 border border-gray-300 rounded-lg leading-8"></textarea></div>
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2 shadow-md">
+                    <i class="ph-bold ph-plus-circle text-xl"></i>افزودن به بانک</button>
+            </form>
+        </div>
+        <div class="tool-card">
+            <div class="flex flex-wrap gap-3 items-end mb-4">
+                <div><label class="text-xs font-bold text-gray-500">پایه</label><select id="bank-filter-grade" class="p-2 border border-gray-300 rounded-lg bg-white">
+                    <option value="">همه</option><option>هفتم</option><option>هشتم</option><option>نهم</option></select></div>
+                <div><label class="text-xs font-bold text-gray-500">دشواری</label><select id="bank-filter-difficulty" class="p-2 border border-gray-300 rounded-lg bg-white">
+                    <option value="">همه</option><option>آسان</option><option>متوسط</option><option>دشوار</option></select></div>
+                <div class="flex-1 min-w-[180px]"><label class="text-xs font-bold text-gray-500">جستجو</label><input id="bank-filter-q" placeholder="کلمه کلیدی..." class="w-full p-2 border border-gray-300 rounded-lg"></div>
+                <button id="bank-filter-btn" class="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-700">جستجو</button>
+            </div>
+            <div id="bank-list" class="space-y-3"></div>
+        </div>`;
+    document.getElementById('bank-form').addEventListener('submit', handleBankAdd);
+    document.getElementById('bank-filter-btn').addEventListener('click', () => {
+        loadQuestionBank({
+            grade: document.getElementById('bank-filter-grade').value,
+            difficulty: document.getElementById('bank-filter-difficulty').value,
+            q: document.getElementById('bank-filter-q').value.trim(),
+        });
+    });
+    ['bank-filter-grade', 'bank-filter-difficulty'].forEach(id => document.getElementById(id).addEventListener('change', () => document.getElementById('bank-filter-btn').click()));
+    document.getElementById('bank-filter-q').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('bank-filter-btn').click(); } });
+}
+
+async function handleBankAdd(e) {
+    e.preventDefault();
+    const f = e.target;
+    const r = await apiPost('question_add', {
+        grade: f.grade.value,
+        topic: f.topic.value.trim(),
+        difficulty: f.difficulty.value,
+        question: f.question.value.trim(),
+        answer: f.answer.value.trim(),
+    });
+    showToast(r.message, !r.success);
+    if (r.success) {
+        f.reset();
+        document.querySelector('#bank-filter-grade').value = '';
+        document.querySelector('#bank-filter-difficulty').value = '';
+        document.querySelector('#bank-filter-q').value = '';
+        loadQuestionBank({});
+    }
+}
+
+async function loadQuestionBank(filters = {}) {
+    const box = document.getElementById('bank-list');
+    if (!box) return;
+    const params = new URLSearchParams({ action: 'questions' });
+    if (filters.grade) params.append('grade', filters.grade);
+    if (filters.difficulty) params.append('difficulty', filters.difficulty);
+    if (filters.q) params.append('q', filters.q);
+    box.innerHTML = '<p class="text-center text-gray-400 text-sm">در حال بارگذاری...</p>';
+    try {
+        const r = await (await fetch(TEACHER_API + '?' + params)).json();
+        if (!r.success) throw new Error(r.message);
+        const list = r.data || [];
+        const diffColor = { 'آسان': 'bg-green-100 text-green-700', 'متوسط': 'bg-orange-100 text-orange-700', 'دشوار': 'bg-red-100 text-red-700' };
+        box.innerHTML = list.length ? '' : '<p class="text-center text-gray-500 py-3 text-sm">سؤالی با این فیلترها یافت نشد.</p>';
+        list.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'bg-gray-50 border rounded-xl p-4';
+            const isMine = myRole === 'admin' || item.teacher_code === currentTeacherCode;
+            row.innerHTML = `
+                <div class="flex flex-wrap justify-between gap-2 mb-2">
+                    <div class="flex flex-wrap gap-2 items-center font-bold text-gray-800">${esc(item.question.split('\n')[0].slice(0, 60))}${esc(item.question.length > 60 ? '…' : '')}
+                        <span class="chip bg-blue-100 text-blue-700">پایه ${esc(item.grade)}</span>
+                        <span class="chip ${diffColor[item.difficulty] || 'bg-gray-200'}">${esc(item.difficulty)}</span>
+                        ${item.topic ? `<span class="chip bg-gray-200 text-gray-600">${esc(item.topic)}</span>` : ''}
+                    </div>
+                    <span class="text-xs text-gray-500 flex items-center gap-2">${esc(item.teacher_name)} · ${jDate(item.created_at)}
+                        ${isMine ? `<button type="button" data-qdel="${item.id}" class="text-red-500 font-bold hover:underline">حذف</button>` : ''}</span>
+                </div>
+                <details class="text-sm text-gray-700 leading-7"><summary class="cursor-pointer text-green-700 font-bold">مشاهده سؤال و پاسخ</summary>
+                    <div class="mt-2 border-t pt-2"><b>سؤال:</b> <div class="whitespace-pre-wrap">${esc(item.question)}</div></div>
+                    <div class="mt-2 border-t pt-2"><b>پاسخ:</b> <div class="whitespace-pre-wrap">${esc(item.answer)}</div></div></details>`;
+            const delBtn = row.querySelector('[data-qdel]');
+            if (delBtn) delBtn.addEventListener('click', async () => {
+                if (!confirm('این سؤال حذف شود؟')) return;
+                const res = await apiPost('question_delete', { question_id: item.id });
+                showToast(res.message, !res.success);
+                if (res.success) loadQuestionBank(filters);
+            });
+            box.appendChild(row);
+        });
+    } catch (e) {
+        box.innerHTML = `<p class="text-center text-red-500 text-sm">${esc(e.message || 'خطا در بارگذاری بانک سؤالات.')}</p>`;
+    }
+}
+
+// ---------- ۴) بانک فرمول‌ها ----------
+function initFormulaTab() {
+    if (formulaView.dataset.built) return;
+    formulaView.dataset.built = '1';
+    formulaView.innerHTML = `
+        <header>
+            <h1 class="text-3xl font-extrabold text-gray-800">بانک فرمول‌ها</h1>
+            <p class="text-lg text-gray-500 mt-2">فرمول‌های ریاضی با نمایش ریاضی (LaTeX) برای همکاری و یادآوری سریع.</p>
+        </header>
+        <div class="tool-card">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">افزودن فرمول</h2>
+            <form id="formula-form" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="field-label">موضوع / درس</label>
+                        <input name="topic" placeholder="مثال: هندسه" class="w-full p-3 border border-gray-300 rounded-lg"></div>
+                    <div><label class="field-label">عنوان فرمول <span class="text-red-500">*</span></label>
+                        <input name="title" required placeholder="مثال: مساحت دایره" class="w-full p-3 border border-gray-300 rounded-lg"></div>
+                </div>
+                <div><label class="field-label">فرمول LaTeX <span class="text-red-500">*</span></label>
+                    <textarea name="latex" dir="ltr" rows="2" required placeholder="A = \\pi r^2" class="w-full p-3 border border-gray-300 rounded-lg font-mono" style="direction:ltr;text-align:left"></textarea></div>
+                <div><label class="field-label">توضیح (اختیاری)</label>
+                    <input name="description" class="w-full p-3 border border-gray-300 rounded-lg"></div>
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2 shadow-md">
+                    <i class="ph-bold ph-plus-circle text-xl"></i>افزودن به بانک</button>
+            </form>
+        </div>
+        <div class="tool-card">
+            <div class="flex flex-wrap gap-3 items-end mb-4">
+                <div class="flex-1 min-w-[200px]"><label class="text-xs font-bold text-gray-500">جستجو در فرمول‌ها</label>
+                    <input id="formula-filter-q" placeholder="عنوان، موضوع یا متن لاتک..." class="w-full p-2 border border-gray-300 rounded-lg"></div>
+                <button id="formula-filter-btn" class="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-700">جستجو</button>
+            </div>
+            <div id="formula-list" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        </div>`;
+    document.getElementById('formula-form').addEventListener('submit', handleFormulaAdd);
+    document.getElementById('formula-filter-btn').addEventListener('click', () => loadFormulas(document.getElementById('formula-filter-q').value.trim()));
+    document.getElementById('formula-filter-q').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('formula-filter-btn').click(); } });
+}
+
+async function handleFormulaAdd(e) {
+    e.preventDefault();
+    const f = e.target;
+    const r = await apiPost('formula_add', {
+        topic: f.topic.value.trim(),
+        title: f.title.value.trim(),
+        latex: f.latex.value.trim(),
+        description: f.description.value.trim(),
+    });
+    showToast(r.message, !r.success);
+    if (r.success) { f.reset(); loadFormulas(''); }
+}
+
+function renderFormulaPreviews() {
+    document.querySelectorAll('[data-latex]').forEach(el => {
+        const lat = el.dataset.latex;
+        if (window._katexReady && window.katex) {
+            try { katex.render(lat, el, { throwOnError: false, displayMode: true }); return; } catch (err) { /* افت به متن خام */ }
+        }
+        el.textContent = lat;
+        el.classList.add('font-mono');
+    });
+}
+window._renderKaTeX = renderFormulaPreviews;
+
+async function loadFormulas(q = '') {
+    const box = document.getElementById('formula-list');
+    if (!box) return;
+    const params = new URLSearchParams({ action: 'formulas' });
+    if (q) params.append('q', q);
+    box.innerHTML = '<p class="text-center text-gray-400 text-sm">در حال بارگذاری...</p>';
+    try {
+        const r = await (await fetch(TEACHER_API + '?' + params)).json();
+        if (!r.success) throw new Error(r.message);
+        const list = r.data || [];
+        box.innerHTML = list.length ? '' : '<p class="text-center text-gray-500 py-3 text-sm">فرمولی یافت نشد. اولین فرمول را اضافه کنید!</p>';
+        list.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'bg-gray-50 border rounded-xl p-4 space-y-3';
+            const isMine = myRole === 'admin' || item.teacher_code === currentTeacherCode;
+            card.innerHTML = `
+                <div class="flex flex-wrap justify-between gap-2 items-start">
+                    <div class="font-bold text-gray-800">${esc(item.title)} ${item.topic ? `<span class="chip bg-blue-100 text-blue-700">${esc(item.topic)}</span>` : ''}</div>
+                    <span class="text-xs text-gray-500 flex items-center gap-2">${esc(item.teacher_name)} · ${jDate(item.created_at)}
+                        ${isMine ? `<button type="button" data-fdel="${item.id}" class="text-red-500 font-bold hover:underline">حذف</button>` : ''}</span>
+                </div>
+                ${item.description ? `<p class="text-sm text-gray-600 leading-7">${esc(item.description)}</p>` : ''}
+                <div class="bg-white border rounded-lg p-3 overflow-auto"><span data-latex="${esc(item.latex)}"></span></div>
+                <div class="flex items-center justify-between gap-2">
+                    <code class="text-xs text-gray-400" dir="ltr">${esc(item.latex)}</code>
+                    <button type="button" data-copy="${encodeURIComponent(item.latex)}" class="text-xs font-bold text-green-600 hover:underline">کپی لاتک</button>
+                </div>`;
+            const del = card.querySelector('[data-fdel]');
+            if (del) del.addEventListener('click', async () => {
+                if (!confirm('این فرمول حذف شود؟')) return;
+                const res = await apiPost('formula_delete', { formula_id: item.id });
+                showToast(res.message, !res.success);
+                if (res.success) loadFormulas(q);
+            });
+            card.querySelector('[data-copy]').addEventListener('click', async (e) => {
+                await navigator.clipboard.writeText(decodeURIComponent(e.currentTarget.dataset.copy));
+                showToast('لاتک کپی شد.');
+            });
+            box.appendChild(card);
+        });
+        renderFormulaPreviews();
+    } catch (e) {
+        box.innerHTML = `<p class="text-center text-red-500 text-sm">${esc(e.message || 'خطا در بارگذاری فرمول‌ها.')}</p>`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    document.querySelectorAll('#tabs-nav .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+    try {
+        const me = await (await fetch('/files/api/auth.php', { method: 'POST', body: new URLSearchParams({ action: 'me' }) })).json();
+        if (!me.success) {
+            showAccessError('ابتدا وارد شوید.');
+            return;
+        }
+        if (me.data.role === 'student') {
+            showAccessError('این صفحه مخصوص دبیران است.');
+            return;
+        }
+        myRole = me.data.role;
+        currentTeacherCode = me.data.code;
+        switchTab('exams');
+        document.getElementById('create-new-exam-btn').addEventListener('click', () => showDetailView('create'));
+    } catch (e) {
+        showAccessError('خطا در ارتباط با سرور.');
+    }
+});
+</script>
+</body>
+</html>

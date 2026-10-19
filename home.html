@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta name="description" content="سایت رسمی دبیرستان دوره اول استعدادهای درخشان شهید هاشمی نژاد ۲ مشهد — اخبار، گزارشات، گالری، کادر آموزشی و ثبت‌نام">
+    <title>صفحه اصلی | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="preload" href="/assets/fonts/vazirmatn-v15-arabic_latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/bold/style.css">
+    <script src="/assets/js/loading-orb.js" defer></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .main-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .main-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .news-card img { transition: transform .4s ease; }
+        .news-card:hover img { transform: scale(1.05); }
+        .header-logo { max-width: 140px; height: auto; display: block; }
+        @keyframes scroll-left { 0% { transform: translateX(-100%); } 100% { transform: translateX(+130%); } }
+        .scrolling-text { white-space: nowrap; animation: scroll-left 40s linear infinite; }
+        .scrolling-container:hover .scrolling-text { animation-play-state: paused; }
+        .tooltip { position: relative; display: inline-block; }
+        .tooltip .tooltiptext { visibility: hidden; width: 180px; background-color: black; color: #fff; text-align: center; padding: 5px 0; border-radius: 6px; position: absolute; z-index: 1; top: 100%; left: 50%; margin-left: -90px; }
+        .tooltip:hover .tooltiptext { visibility: visible; }
+        .tooltip .tooltiptext::after { content: " "; position: absolute; bottom: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: transparent transparent black transparent; }
+        .faq-answer { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="text-gray-900">
+<div id="header"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- نوار اطلاعیه متحرک -->
+    <section class="mb-8">
+        <div class="grid grid-cols-1 gap-8">
+            <div class="scrolling-container sm:col-span-2 bg-yellow-400 p-3 rounded-xl shadow-md flex items-center gap-5 overflow-hidden">
+                <i class="ph-fill ph-megaphone text-xl flex-shrink-0"></i>
+                <div>
+                    <p id="ticker-text" class="scrolling-text text-base font-bold"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- معرفی مدرسه -->
+    <section class="mb-10">
+        <div class="bg-white rounded-2xl shadow-sm border p-6 sm:p-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                <div class="md:col-span-3 space-y-4" id="school-intro">
+                    <div class="text-center py-8 text-gray-400"><hn-orb size="46" speed="750" motion="morph" class="text-green-600"></hn-orb></div>
+                </div>
+                <div class="flex justify-center">
+                    <img src="/files/uploads/site/logo-school.png" alt="لوگوی مدرسه" class="w-52 h-auto rounded-xl shadow-md">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- کارت‌های دسترسی سریع -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-extrabold text-gray-800 mb-6 text-center">دسترسی سریع</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+            <a href="/gallery.html" class="main-card block bg-green-500 text-white p-6 rounded-2xl shadow-lg text-center">
+                <i class="ph-duotone ph-images text-5xl mb-3"></i>
+                <h3 class="text-lg font-bold">ببین مدرسه رو!</h3>
+            </a>
+            <a href="/staff.html" class="main-card block bg-green-600 text-white p-6 rounded-2xl shadow-lg text-center">
+                <i class="ph-duotone ph-users-three text-5xl mb-3"></i>
+                <h3 class="text-lg font-bold">کادر آموزشی</h3>
+            </a>
+            <a href="/register.html" class="main-card block bg-orange-500 text-white p-6 rounded-2xl shadow-lg text-center">
+                <i class="ph-duotone ph-pencil-simple-line text-5xl mb-3"></i>
+                <h3 class="text-lg font-bold">ثبت نام</h3>
+            </a>
+            <a href="/azmoon/student.html" class="main-card block bg-teal-500 text-white p-6 rounded-2xl shadow-lg text-center">
+                <i class="ph-duotone ph-exam text-5xl mb-3"></i>
+                <h3 class="text-lg font-bold">آزمون آنلاین</h3>
+            </a>
+            <a href="/contact.html" class="main-card block bg-green-700 text-white p-6 rounded-2xl shadow-lg text-center">
+                <i class="ph-duotone ph-headset text-5xl mb-3"></i>
+                <h3 class="text-lg font-bold">ارتباط با ما</h3>
+            </a>
+        </div>
+    </section>
+
+    <!-- گزارشات اخیر -->
+    <section class="mb-10">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-extrabold text-gray-800">« گزارشات فعالیت های دبیرستان »</h2>
+        </div>
+        <div id="posts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center py-10 text-gray-400"><hn-orb size="46" speed="750" motion="morph" class="text-green-600"></hn-orb></div>
+        </div>
+        <div class="text-center mt-8">
+            <a href="/news/" class="inline-flex bg-white border-2 border-green-600 text-green-700 px-8 py-3 rounded-xl font-bold hover:bg-green-50 transition shadow-sm">مشاهده همه گزارشات <i class="ph-bold ph-caret-left text-xl"></i></a>
+        </div>
+    </section>
+
+    <!-- امکانات -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-extrabold text-gray-800 mb-6 text-center">امکانات فوق العاده مدرسه</h2>
+        <div id="facilities-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-center"></div>
+    </section>
+
+    <!-- سوالات متداول -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-extrabold text-gray-800 mb-6 text-center">سوالات متداول</h2>
+        <div id="faq-list" class="max-w-3xl mx-auto space-y-3"></div>
+    </section>
+
+    <!-- دعوت به ثبت‌نام -->
+    <section class="mb-4">
+        <div class="bg-green-600 rounded-2xl shadow-lg p-8 text-center text-white">
+            <h2 class="text-2xl font-extrabold">دانش‌آموز هاشمی‌نژاد ۲ می‌خواهی شوید؟</h2>
+            <p class="mt-3 text-green-100">ثبت‌نام در این مدرسه فقط از طریق آزمون‌های هماهنگ استعدادهای درخشان انجام می‌شود؛ بعد از قبولی، فرم ثبت‌نام سایت را تکمیل کنید تا وقت مراجعه حضوری دریافت کنید.</p>
+            <a href="/register.html" class="inline-flex mt-6 bg-white text-green-700 px-10 py-3 rounded-xl font-extrabold hover:bg-green-50 transition shadow-md">تکمیل فرم ثبت‌نام</a>
+        </div>
+    </section>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/assets/js/admin-bar.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    // معرفی مدرسه
+    try {
+        const s = await (await fetch('/files/api/settings.php?action=public')).json();
+        const introEl = document.getElementById('school-intro');
+        if (s.success && s.data.intro_home?.length) {
+            document.title = 'صفحه اصلی | ' + (s.data.school_short_name || 'دبیرستان هاشمی نژاد ۲');
+            introEl.innerHTML = s.data.intro_home.map(p => `<p class="text-justify leading-9 text-gray-700">${esc(p).replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>')}</p>`).join('');
+        }
+    } catch (e) {}
+
+    // گزارشات اخیر
+    try {
+        const res = await (await fetch('/files/api/content.php?action=get_posts&page=1&per=6')).json();
+        const grid = document.getElementById('posts-grid');
+        if (res.success && res.data.posts.length) {
+            grid.innerHTML = res.data.posts.map(p => `
+                <a href="/news/post.html?slug=${encodeURIComponent(p.slug)}" data-post-slug="${esc(p.slug)}" data-post-id="${p.id || ''}" class="news-card block bg-white rounded-2xl shadow-md overflow-hidden border hover:shadow-xl transition">
+                    <div class="h-44 overflow-hidden bg-gray-100">
+                        ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-gray-300"><i class="ph-duotone ph-newspaper text-6xl"></i></div>`}
+                    </div>
+                    <div class="p-5">
+                        <span class="text-xs text-gray-500 flex items-center gap-1"><i class="ph-bold ph-calendar-blank"></i>${esc(p.year || jDate(p.created_at))}</span>
+                        <h3 class="font-bold text-gray-800 mt-2 leading-7">${esc(p.title)}</h3>
+                        <p class="text-sm text-gray-500 mt-2 leading-6 line-clamp-2">${esc(p.excerpt)}</p>
+                        <span class="text-green-600 text-sm font-bold mt-3 inline-flex items-center gap-1">توضیحات بیشتر <i class="ph-bold ph-caret-left"></i></span>
+                    </div>
+                </a>`).join('');
+        } else {
+            grid.innerHTML = '<p class="col-span-full text-center text-gray-400">هنوز گزارشی ثبت نشده است.</p>';
+        }
+    } catch (e) {
+        document.getElementById('posts-grid').innerHTML = '<p class="col-span-full text-center text-gray-400">خطا در بارگذاری گزارشات.</p>';
+    }
+
+    // امکانات
+    try {
+        const res = await (await fetch('/files/api/content.php?action=get_facilities')).json();
+        const grid = document.getElementById('facilities-grid');
+        grid.innerHTML = res.data.map(f => `
+            <div class="bg-white rounded-xl border p-5 hover:border-green-500 hover:shadow-md transition" data-fac-id="${f.id}">
+                <i class="ph-duotone ${esc(f.icon)} text-4xl text-green-600 mb-2"></i>
+                <h3 class="font-bold text-gray-800 text-sm">${esc(f.title)}</h3>
+            </div>`).join('');
+    } catch (e) {}
+
+    // سوالات متداول
+    try {
+        const res = await (await fetch('/files/api/content.php?action=get_faq')).json();
+        const list = document.getElementById('faq-list');
+        list.innerHTML = res.data.map((f, i) => `
+            <div data-accordion data-faq-id="${f.id}" class="bg-white rounded-xl border overflow-hidden">
+                <button data-q class="w-full flex justify-between items-center px-5 py-4 font-bold text-gray-800 hover:bg-gray-50 transition text-right">
+                    <span>${esc(f.q)}</span>
+                    <i class="ph-bold ph-caret-down text-gray-400 transition-transform"></i>
+                </button>
+                <div data-a class="hidden px-5 pb-4 text-gray-600 leading-7">${esc(f.a)}</div>
+            </div>`).join('');
+        bindAccordion();
+    } catch (e) {}
+});
+</script>
+</body>
+</html>

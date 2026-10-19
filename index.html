@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta name="description" content="سایت رسمی دبیرستان دوره اول استعدادهای درخشان شهید هاشمی نژاد ۲ مشهد — اخبار، گزارشات، گالری، کادر آموزشی و ثبت‌نام">
+    <title>دبیرستان هاشمی نژاد ۲ | صفحه ورود</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="preload" href="/assets/fonts/vazirmatn-v15-arabic_latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/bold/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Vazirmatn', sans-serif; min-height: 100vh; }
+        .header-logo { max-width: 170px; height: auto; }
+        @media (min-width: 640px) { .header-logo { max-width: 220px; } }
+
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2rem;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.25);
+            background: white;
+            direction: ltr;
+        }
+        .slider-track { display: flex; width: 100%; transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
+        .slide { flex: 0 0 100%; background: white; border-radius: 2rem; overflow: hidden; direction: rtl; }
+        .slide-img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        @media (max-width: 768px) { .slide-img { height: 190px !important; } }
+        .slider-container:hover .slide-img { transform: scale(1.02); }
+        .slide-caption {
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(8px);
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(4px);
+            width: 46px;
+            height: 46px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+            z-index: 20;
+            border: none;
+            font-weight: bold;
+        }
+        .slider-btn:hover { background: white; transform: translateY(-50%) scale(1.08); box-shadow: 0 12px 24px rgba(0,0,0,0.18); }
+        .slider-btn-right { left: 18px; }
+        .slider-btn-left { right: 18px; }
+        .dots { position: absolute; bottom: 18px; left: 0; right: 0; display: flex; justify-content: center; gap: 12px; z-index: 20; }
+        .dot { width: 10px; height: 10px; background: rgba(0,0,0,0.35); border-radius: 50%; cursor: pointer; transition: all 0.2s ease; }
+        .dot.active { background: #16a34a; width: 26px; border-radius: 20px; box-shadow: 0 0 6px #16a34a80; }
+
+        .btn-entrance { transition: all 0.25s ease; box-shadow: 0 8px 20px rgba(22,163,74,0.25); }
+        .btn-entrance:hover { transform: translateY(-4px); box-shadow: 0 20px 30px -12px rgba(22,163,74,0.4); }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeUp 0.7s ease forwards; }
+        .main-content-card {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .action-divider {
+            background: linear-gradient(90deg, transparent, #16a34a, #22c55e, #16a34a, transparent);
+            height: 2px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .badge-link {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            transition: all 0.3s ease;
+        }
+        .badge-link:hover { transform: scale(1.04); box-shadow: 0 15px 35px rgba(0,0,0,0.18); }
+        .badge-link img { width: 100%; height: 200px; object-fit: cover; border-radius: 1.5rem; }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <header class="bg-white/90 backdrop-blur-sm shadow-sm sticky top-0 z-50 border-b border-green-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center items-center py-4">
+                <div class="flex items-center gap-3">
+                    <img src="/files/uploads/site/logo-header.png" alt="دبیرستان هاشمی نژاد ۲" class="header-logo">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-5 sm:px-8 py-8 md:py-12">
+        <div class="main-content-card">
+            <div class="mb-12">
+                <div class="slider-container relative max-w-4xl mx-auto" id="mainSlider">
+                    <div class="slider-track" id="sliderTrack">
+                        <div class="slide">
+                            <img class="slide-img" src="/files/uploads/site/slider-01.jpg" alt="حیاط مدرسه">
+                            <div class="slide-caption">
+                                <i class="ph-duotone ph-school text-3xl text-green-600"></i>
+                                <h3 class="text-xl font-bold mt-1">حیاط و زمین‌های ورزشی</h3>
+                                <p class="text-gray-600">فوتبال، بسکتبال و والیبال استاندار</p>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <img class="slide-img" src="/files/uploads/site/slider-02.jpg" alt="کلاس‌های مجهز">
+                            <div class="slide-caption">
+                                <i class="ph-duotone ph-chalkboard-teacher text-3xl text-green-600"></i>
+                                <h3 class="text-xl font-bold mt-1">کلاس‌های مجهز</h3>
+                                <p class="text-gray-600">تخته هوشمند، سرمایش و گرمایش</p>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <img class="slide-img" src="/files/uploads/site/slider-03.jpg" alt="آزمایشگاه">
+                            <div class="slide-caption">
+                                <i class="ph-duotone ph-flask text-3xl text-green-600"></i>
+                                <h3 class="text-xl font-bold mt-1">آزمایشگاه علوم</h3>
+                                <p class="text-gray-600">آموزش علمی همراه با تجربه</p>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <img class="slide-img" src="/files/uploads/site/slider-04.jpg" alt="کتابخانه">
+                            <div class="slide-caption">
+                                <i class="ph-duotone ph-books text-3xl text-green-600"></i>
+                                <h3 class="text-xl font-bold mt-1">کتابخانه و سالن مطالعه</h3>
+                                <p class="text-gray-600">محیطی آرام برای درس خواندن</p>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <img class="slide-img" src="/files/uploads/site/slider-05.jpg" alt="سالن فرش‌شده">
+                            <div class="slide-caption">
+                                <i class="ph-duotone ph-house-line text-3xl text-green-600"></i>
+                                <h3 class="text-xl font-bold mt-1">سالن‌های فرش‌شده</h3>
+                                <p class="text-gray-600">فضایی منظم و یکپارچه</p>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <img class="slide-img" src="/files/uploads/site/slider-06.jpg" alt="کارگاه فنی">
+                            <div class="slide-caption">
+                                <i class="ph-duotone ph-wrench text-3xl text-green-600"></i>
+                                <h3 class="text-xl font-bold mt-1">کارگاه فنی و حرفه‌ای</h3>
+                                <p class="text-gray-600">یادگیری مهارت‌های عملی</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="slider-btn slider-btn-right" id="prevSlideBtn" aria-label="اسلاید قبلی">
+                        <i class="ph-bold ph-caret-left text-xl text-gray-700"></i>
+                    </button>
+                    <button class="slider-btn slider-btn-left" id="nextSlideBtn" aria-label="اسلاید بعدی">
+                        <i class="ph-bold ph-caret-right text-xl text-gray-700"></i>
+                    </button>
+                    <div class="dots" id="dotsSlider"></div>
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800">به سایت دبیرستان دوره اول استعدادهای درخشان شهید هاشمی نژاد ۲ خوش آمدید</h1>
+                <p class="text-gray-500 text-lg mt-4 max-w-3xl mx-auto">محیطی برای یادگیری، تجربه، تلاش و شکوفایی استعدادهای دانش‌آموزان</p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-5 mt-6">
+                <a href="/home.html" class="btn-entrance bg-green-600 text-white px-10 py-4 rounded-2xl font-bold text-lg flex items-center gap-3 shadow-lg">
+                    <i class="ph-bold ph-sign-in text-xl"></i>
+                    ورود به سایت
+                </a>
+                <a href="/auth/login.html" class="btn-entrance bg-white text-green-700 border-2 border-green-500 px-10 py-4 rounded-2xl font-bold text-lg flex items-center gap-3 shadow-md hover:bg-green-50">
+                    <i class="ph-bold ph-user-circle text-xl"></i>
+                    ورود دانش‌آموزان و دبیران
+                </a>
+                <a href="/register.html" class="btn-entrance bg-orange-500 text-white px-10 py-4 rounded-2xl font-bold text-lg flex items-center gap-3 shadow-lg">
+                    <i class="ph-bold ph-pencil-simple-line text-xl"></i>
+                    فرم ثبت‌نام
+                </a>
+            </div>
+            <p class="text-center text-gray-400 text-sm mt-6 mb-12">
+                برای دسترسی به آزمون‌ها و پروفایل، لطفاً وارد شوید.
+            </p>
+
+            <div class="action-divider mb-8"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 text-center shadow-md border border-green-100 hover:shadow-lg transition-all duration-300">
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="ph-duotone ph-images text-3xl text-green-700"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">ببین مدرسه رو!</h3>
+                    <p class="text-gray-500 text-sm mt-2">گالری تصاویر فضا و امکانات مدرسه</p>
+                </div>
+                <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 text-center shadow-md border border-green-100 hover:shadow-lg transition-all duration-300">
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="ph-duotone ph-newspaper text-3xl text-green-700"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">گزارشات فعالیت‌ها</h3>
+                    <p class="text-gray-500 text-sm mt-2">آخرین اخبار و فعالیت‌های دبیرستان</p>
+                </div>
+                <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 text-center shadow-md border border-green-100 hover:shadow-lg transition-all duration-300">
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="ph-duotone ph-users-three text-3xl text-green-700"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">کادر آموزشی</h3>
+                    <p class="text-gray-500 text-sm mt-2">معرفی مدیر، معاونین و دبیران</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <a href="/gallery.html" class="badge-link group">
+                    <img src="/files/uploads/gallery/02-hayat-01.jpg" alt="ببین مدرسه رو">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-5 rounded-1.5rem rounded-b-2xl">
+                        <h3 class="text-white font-bold text-xl flex items-center gap-2"><i class="ph-fill ph-images text-2xl text-yellow-400"></i> ببین مدرسه رو!</h3>
+                    </div>
+                </a>
+                <a href="/news/" class="badge-link group">
+                    <img src="/files/uploads/news/post-01/img01.jpg" alt="گزارشات">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-5">
+                        <h3 class="text-white font-bold text-xl flex items-center gap-2"><i class="ph-fill ph-newspaper text-2xl text-yellow-400"></i> گزارشات فعالیت‌های دبیرستان</h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/footer.js"></script>
+    <script src="/assets/js/admin-bar.js"></script>
+    <script>
+        (function() {
+            const sliderContainer = document.getElementById('mainSlider');
+            const track = document.getElementById('sliderTrack');
+            const slides = Array.from(document.querySelectorAll('#sliderTrack .slide'));
+            const prevBtn = document.getElementById('prevSlideBtn');
+            const nextBtn = document.getElementById('nextSlideBtn');
+            const dotsContainer = document.getElementById('dotsSlider');
+            if (!track || slides.length === 0) return;
+
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+            let autoInterval = null;
+            const AUTO_DELAY = 5000;
+            let isTransitioning = false;
+
+            function buildDots() {
+                if (!dotsContainer) return;
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.classList.add('dot');
+                    if (i === currentIndex) dot.classList.add('active');
+                    dot.setAttribute('data-index', i);
+                    dot.setAttribute('aria-label', 'اسلاید ' + (i + 1));
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (isTransitioning) return;
+                        goToSlide(parseInt(dot.getAttribute('data-index'), 10));
+                        resetAutoPlay();
+                    });
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function updateDotsActive() {
+                document.querySelectorAll('#dotsSlider .dot').forEach((dot, idx) => {
+                    if (idx === currentIndex) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
+            }
+
+            function goToSlide(index, smooth = true) {
+                if (isTransitioning) return;
+                if (index < 0) index = totalSlides - 1;
+                if (index >= totalSlides) index = 0;
+                if (index === currentIndex) return;
+                isTransitioning = true;
+                currentIndex = index;
+                const offset = -currentIndex * 100;
+                track.style.transition = smooth ? 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
+                track.style.transform = `translateX(${offset}%)`;
+                updateDotsActive();
+                const onTransitionEnd = () => { isTransitioning = false; track.removeEventListener('transitionend', onTransitionEnd); };
+                track.addEventListener('transitionend', onTransitionEnd, { once: true });
+                setTimeout(() => { isTransitioning = false; }, 550);
+            }
+
+            function nextSlide() { if (!isTransitioning) goToSlide(currentIndex + 1); }
+            function prevSlide() { if (!isTransitioning) goToSlide(currentIndex - 1); }
+            function startAutoPlay() {
+                if (autoInterval) clearInterval(autoInterval);
+                autoInterval = setInterval(() => { if (!isTransitioning) nextSlide(); }, AUTO_DELAY);
+            }
+            function resetAutoPlay() { startAutoPlay(); }
+
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); prevSlide(); resetAutoPlay(); });
+                nextBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextSlide(); resetAutoPlay(); });
+            }
+
+            sliderContainer.addEventListener('mouseenter', () => stopAutoPlay());
+            sliderContainer.addEventListener('mouseleave', () => startAutoPlay());
+
+            function stopAutoPlay() { if (autoInterval) { clearInterval(autoInterval); autoInterval = null; } }
+
+            let touchStartX = 0;
+            sliderContainer.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; stopAutoPlay(); }, { passive: true });
+            sliderContainer.addEventListener('touchend', (e) => {
+                const delta = e.changedTouches[0].screenX - touchStartX;
+                if (Math.abs(delta) > 50) {
+                    if (delta > 0) prevSlide(); else nextSlide();
+                    resetAutoPlay();
+                } else startAutoPlay();
+            }, { passive: true });
+
+            buildDots();
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0%)';
+            void track.offsetHeight;
+            track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            currentIndex = 0;
+            updateDotsActive();
+            startAutoPlay();
+        })();
+    </script>
+</body>
+</html>

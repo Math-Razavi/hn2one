@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ورود حساب کاربری — دانش‌آموزان، دبیران و مدیر دبیرستان هاشمی نژاد ۲">
+    <title>ورود | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="w-full max-w-md mx-auto flex-grow flex items-center justify-center p-4">
+    <div class="w-full">
+        <header class="text-center mb-8">
+            <i class="ph-fill ph-graduation-cap text-6xl text-green-600"></i>
+            <h1 class="text-4xl font-extrabold text-gray-800 mt-2">خوش آمدید</h1>
+            <p class="text-lg text-gray-500 mt-2">با کد کاربری و رمزی که مدرسه به شما داده است وارد شوید</p>
+        </header>
+
+        <form id="login-form" class="bg-white rounded-2xl shadow-xl p-8 space-y-4">
+            <div>
+                <label for="login-code" class="block mb-2 font-semibold">کد کاربری</label>
+                <input type="text" id="login-code" dir="ltr" class="w-full p-3 border border-gray-300 rounded-lg text-center" placeholder="مثال: s1404001" required autocomplete="username">
+            </div>
+            <div>
+                <label for="login-password" class="block mb-2 font-semibold">رمز عبور</label>
+                <input type="password" id="login-password" dir="ltr" class="w-full p-3 border border-gray-300 rounded-lg text-center" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg text-lg font-bold hover:bg-green-700 transition shadow-md flex items-center justify-center gap-2">
+                <i class="ph-bold ph-sign-in text-xl"></i> ورود
+            </button>
+            <div id="login-box" class="text-center font-bold h-6"></div>
+        </form>
+
+        <p class="text-center text-sm text-gray-500 mt-6 leading-7">
+            حساب کاربری شما توسط مدرسه ساخته می‌شود.<br>
+            اگر حساب ندارید یا رمز خود را فراموش کرده‌اید با دبیرستان تماس بگیرید.
+        </p>
+    </div>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const box = document.getElementById('login-box');
+        box.textContent = 'در حال بررسی...';
+        box.className = 'text-center font-bold h-6 text-gray-500';
+
+        const code = document.getElementById('login-code').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        const fd = new FormData();
+        fd.append('action', 'login');
+        fd.append('code', code);
+        fd.append('password', password);
+
+        try {
+            const r = await (await fetch('/files/api/auth.php', { method: 'POST', body: fd })).json();
+            box.textContent = r.message;
+            box.className = 'text-center font-bold h-6 ' + (r.success ? 'text-green-600' : 'text-red-600');
+            if (r.success) {
+                localStorage.setItem('userCode', r.user.code);
+                localStorage.setItem('userName', r.user.name);
+                localStorage.setItem('userRole', r.user.role);
+                if (r.user.class) localStorage.setItem('userClass', r.user.class); else localStorage.removeItem('userClass');
+                if (r.user.csrf_token) localStorage.setItem('csrf_token', r.user.csrf_token);
+                setTimeout(() => {
+                    window.location.href = r.user.role === 'teacher' ? '/azmoon/teacher.html' : '/profile.html';
+                }, 1200);
+            }
+        } catch (err) {
+            box.textContent = 'خطا در ارتباط با سرور.';
+            box.className = 'text-center font-bold h-6 text-red-600';
+        }
+    });
+});
+</script>
+</body>
+</html>

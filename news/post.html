@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta name="description" content="متن کامل خبر">
+    <title>متن خبر | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <script src="/assets/js/loading-orb.js" defer></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; height: auto; }
+        .post-body { line-height: 2.2; }
+        .gallery-thumb { cursor: zoom-in; transition: all .25s ease; }
+        .gallery-thumb:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0,0,0,.15); }
+        .gallery-thumb img { height: 160px; width: 100%; object-fit: cover; }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-grow w-full">
+    <div id="post-wrap" class="bg-white rounded-2xl shadow-lg border overflow-hidden">
+        <div class="p-8 sm:p-12">
+            <div id="post-loading" class="text-center py-16 text-gray-400"><hn-orb size="56" speed="750" motion="morph" class="text-green-600 mx-auto"></hn-orb></div>
+            <article id="post-content" class="hidden">
+                <div class="flex flex-wrap items-center gap-3 text-sm">
+                    <span id="post-cat" class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold"></span>
+                    <span id="post-year" class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full"></span>
+                    <span id="post-date" class="text-gray-400 flex items-center gap-1"><i class="ph-bold ph-calendar-blank"></i></span>
+                </div>
+                <h1 id="post-title" class="text-2xl sm:text-3xl font-extrabold text-gray-800 mt-4 leading-relaxed"></h1>
+                <div id="post-image-wrap" class="hidden mt-6 rounded-xl overflow-hidden">
+                    <img id="post-image" class="w-full object-cover max-h-96" alt="">
+                </div>
+                <div id="post-body" class="mt-6 text-gray-700 text-justify"></div>
+                <div id="gallery-block">
+                    <hr class="my-8 border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2"><i class="ph-fill ph-images text-2xl text-green-600"></i> گزارش تصویری</h2>
+                    <div id="post-gallery" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+                </div>
+            </article>
+            <div id="post-error" class="hidden text-center py-16">
+                <i class="ph-duotone ph-warning text-6xl text-red-400"></i>
+                <p class="text-xl font-bold text-gray-600 mt-4">این خبر یافت نشد.</p>
+                <a href="/news/" class="inline-flex mt-6 bg-green-600 text-white px-6 py-2 rounded-lg font-bold">بازگشت به اخبار</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- لایت‌باکس -->
+<div id="lightbox" class="hidden fixed inset-0 z-[100] bg-black/85 items-center justify-center p-4 cursor-zoom-out">
+    <img id="lightbox-img" class="max-w-full max-h-full rounded-xl object-contain" alt="">
+    <button class="absolute top-4 left-4 text-white text-4xl" aria-label="بستن">&times;</button>
+</div>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/assets/js/admin-bar.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const slug = new URLSearchParams(window.location.search).get('slug');
+    if (!slug) { document.getElementById('post-error').classList.remove('hidden'); document.getElementById('post-loading').classList.add('hidden'); return; }
+    try {
+        const res = await fetch(`/files/api/content.php?action=get_post&slug=${encodeURIComponent(slug)}`);
+        const result = await res.json();
+        document.getElementById('post-loading').classList.add('hidden');
+        if (!result.success) { document.getElementById('post-error').classList.remove('hidden'); return; }
+        const p = result.data;
+        document.title = p.title + ' | دبیرستان هاشمی نژاد ۲';
+        document.getElementById('post-cat').textContent = p.category || 'گزارش';
+        document.getElementById('post-year').textContent = p.year || jDate(p.created_at);
+        document.getElementById('post-date').innerHTML = '<i class="ph-bold ph-calendar-blank"></i> ' + jDate(p.created_at);
+        document.getElementById('post-title').textContent = p.title;
+        if (p.image) {
+            document.getElementById('post-image').src = p.image;
+            document.getElementById('post-image-wrap').classList.remove('hidden');
+        }
+        const bodyEl = document.getElementById('post-body');
+        bodyEl.innerHTML = '';
+        (p.body || '').split(/\n+/).filter(x => x.trim()).forEach(para => {
+            const el = document.createElement('p');
+            el.className = 'mb-4';
+            el.textContent = para;
+            bodyEl.appendChild(el);
+        });
+        // گالری
+        const gal = document.getElementById('post-gallery');
+        const imgs = p.gallery?.length ? p.gallery : (p.image ? [p.image] : []);
+        if (!imgs.length) {
+            document.getElementById('gallery-block').classList.add('hidden');
+        } else {
+            gal.innerHTML = '';
+            imgs.forEach(src => {
+                if (!src) return;
+                const fig = document.createElement('figure');
+                fig.className = 'gallery-thumb rounded-xl overflow-hidden border';
+                fig.innerHTML = `<img src="${esc(src)}" alt="${esc(p.title)}" loading="lazy">`;
+                fig.addEventListener('click', () => openLightbox(src));
+                gal.appendChild(fig);
+            });
+        }
+        document.getElementById('post-content').classList.remove('hidden');
+    } catch (e) {
+        document.getElementById('post-loading').classList.add('hidden');
+        document.getElementById('post-error').classList.remove('hidden');
+    }
+});
+</script>
+</body>
+</html>

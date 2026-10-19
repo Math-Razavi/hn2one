@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "title": "کارگاه هنر و خلاقیت",
+        "icon": "ph-palette"
+    },
+    {
+        "id": 2,
+        "title": "مدرسه ی مفروش",
+        "icon": "ph-house-line"
+    },
+    {
+        "id": 3,
+        "title": "آزمایشگاه",
+        "icon": "ph-flask"
+    },
+    {
+        "id": 4,
+        "title": "کارگاه فنی حرفه‌ای",
+        "icon": "ph-wrench"
+    },
+    {
+        "id": 5,
+        "title": "سالن مطالعه",
+        "icon": "ph-books"
+    },
+    {
+        "id": 6,
+        "title": "اتاق رایانه",
+        "icon": "ph-desktop-tower"
+    }
+]

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>آزمون آنلاین دانش‌آموز | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+        .radio-label-container span { transition: all 0.2s ease-in-out; }
+        input[type="radio"]:checked + span {
+            border-color: #16a34a;
+            background-color: #ecfdf5;
+            color: #065f46;
+            transform: scale(1.05);
+        }
+        .loading-spinner { border-top-color: #16a34a; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="w-full max-w-2xl mx-auto px-4 sm:px-6 flex-grow flex items-start justify-center py-10">
+    <div class="w-full bg-white rounded-2xl shadow-xl p-8">
+        <header id="main-header" class="text-center mb-8 border-b pb-6">
+            <h1 class="text-3xl font-extrabold text-gray-800">آزمون آنلاین</h1>
+            <p class="text-lg text-gray-500 mt-2">خودت را محک بزن!</p>
+        </header>
+
+        <div id="preview-bar" class="hidden rounded-xl bg-indigo-50 border border-indigo-200 p-4 text-center text-sm font-bold text-indigo-700 leading-6 mb-6">
+            <i class="ph-fill ph-eye text-lg"></i> حالت پیش‌نمایش مدیریتی — شما لیست و برگه آزمون‌ها را به چشم دانش‌آموز می‌بینید؛ ثبت نتیجه فقط با حساب دانش‌آموز انجام می‌شود.
+        </div>
+
+        <div id="status-section" class="text-center py-6"></div>
+
+        <div id="exam-section" class="hidden"></div>
+        <div id="result-section" class="hidden text-center"></div>
+    </div>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+const AZMOON_API = '/files/api/azmoon.php';
+const statusSection = document.getElementById('status-section');
+const examSection = document.getElementById('exam-section');
+const resultSection = document.getElementById('result-section');
+const mainHeader = document.getElementById('main-header');
+
+let currentRole = null;
+let activeExam = null;
+let previewMode = false;
+
+function csrf() { return localStorage.getItem('csrf_token') || ''; }
+
+function showStatus(message, isError = false, withLogin = true) {
+    const icon = isError ? '<i class="ph-fill ph-x-circle text-6xl text-red-500 mb-4"></i>' : '<div class="loading-spinner h-12 w-12 rounded-full border-4 border-t-4 border-gray-200 mx-auto mb-4"></div>';
+    if (!withLogin) {
+        statusSection.innerHTML = `<div class="py-10">${icon}<p class="text-center font-bold text-lg ${isError ? 'text-red-600' : 'text-gray-600'}">${message}</p></div>`;
+        return;
+    }
+    statusSection.innerHTML = `<div class="py-10">${icon}<p class="text-center font-bold text-lg ${isError ? 'text-red-600' : 'text-gray-600'}">${message}</p>${isError ? '<a href="/auth/login.html" class="inline-flex mt-6 bg-green-600 text-white px-6 py-2 rounded-lg font-bold">صفحه ورود</a>' : ''}</div>`;
+}
+
+function pDigits(s) { return String(s).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+function createDonutChart(percentage) {
+    const size = 160, strokeWidth = 20;
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (percentage / 100) * circumference;
+    const color = percentage >= 70 ? '#16a34a' : (percentage >= 40 ? '#f59e0b' : '#dc2626');
+    return `<div class="relative w-40 h-40 mx-auto"><svg class="w-full h-full transform -rotate-90" viewBox="0 0 ${size} ${size}"><circle class="text-gray-200" stroke-width="${strokeWidth}" stroke="currentColor" fill="transparent" r="${radius}" cx="${size / 2}" cy="${size / 2}"/><circle stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round" stroke="currentColor" fill="transparent" r="${radius}" cx="${size / 2}" cy="${size / 2}" style="color: ${color}; transition: stroke-dashoffset 1s ease-out;"/></svg><div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-3xl font-extrabold text-gray-800">${pDigits(Math.round(percentage))}٪</span><span class="text-sm font-bold text-gray-500">درصد صحیح</span></div></div>`;
+}
+
+function analysisHTML(correct, wrong, blank) {
+    return `<div class="mt-8 p-6 bg-gray-50 rounded-lg text-right">
+        <h3 class="text-xl font-bold mb-4">تحلیل آزمون</h3>
+        <div class="space-y-3">
+        <div class="flex items-center gap-2"><span class="w-28 font-semibold">صحیح:</span><div class="flex flex-wrap gap-2">${correct.map(q => `<span class="bg-green-100 text-green-800 text-sm font-bold px-3 py-1 rounded-full">${pDigits(q)}</span>`).join('') || '<span class="text-gray-500 text-sm">موردی یافت نشد</span>'}</div></div>
+        <div class="flex items-center gap-2"><span class="w-28 font-semibold">غلط:</span><div class="flex flex-wrap gap-2">${wrong.map(q => `<span class="bg-red-100 text-red-800 text-sm font-bold px-3 py-1 rounded-full">${pDigits(q)}</span>`).join('') || '<span class="text-gray-500 text-sm">موردی یافت نشد</span>'}</div></div>
+        <div class="flex items-center gap-2"><span class="w-28 font-semibold">بدون پاسخ:</span><div class="flex flex-wrap gap-2">${blank.map(q => `<span class="bg-gray-200 text-gray-700 text-sm font-bold px-3 py-1 rounded-full">${pDigits(q)}</span>`).join('') || '<span class="text-gray-500 text-sm">موردی یافت نشد</span>'}</div></div>
+        </div></div>`;
+}
+
+function showResult(r) {
+    mainHeader.classList.add('hidden');
+    examSection.classList.add('hidden');
+    resultSection.classList.remove('hidden');
+    const percentage = r.total > 0 ? (r.score / r.total) * 100 : 0;
+    let keyFileHTML = '';
+    if (activeExam && activeExam.answer_key) {
+        keyFileHTML = `<div class="mt-8 border-t pt-8"><h3 class="text-xl font-bold text-gray-800 mb-2">پاسخنامه تشریحی</h3><p class="text-gray-500 mb-4">برای بررسی دقیق‌تر سوالات، پاسخنامه تشریحی را دانلود کنید.</p><a href="${esc(activeExam.answer_key)}" download="${esc(activeExam.answer_key_name || 'pasokhname.pdf')}" class="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition"><i class="ph-fill ph-download-simple text-xl"></i>دانلود پاسخنامه تشریحی</a></div>`;
+    }
+    resultSection.innerHTML = `<h2 class="text-3xl font-extrabold text-gray-800">کارنامه آزمون</h2><div class="mt-8">${createDonutChart(percentage)}</div><p class="text-2xl font-bold text-gray-700 mt-4">نمره شما: ${pDigits(r.score)} از ${pDigits(r.total)}</p>${analysisHTML(r.correct || [], r.wrong || [], r.blank || [])}${keyFileHTML}<div class="mt-8"><button id="reload-btn" class="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg font-bold hover:bg-gray-300 transition">بازگشت به لیست آزمون‌ها</button></div>`;
+    document.getElementById('reload-btn').addEventListener('click', initialize);
+}
+
+function renderExamsList(exams, myResults) {
+    if (!exams.length) {
+        showStatus('در حال حاضر آزمون فعالی نیست. وقتی دبیر آزمون جدید فعال کند، اینجا می‌بینید.', true);
+        statusSection.querySelector('a')?.remove();
+        return;
+    }
+    statusSection.classList.add('hidden');
+    let html = '<div class="space-y-4">';
+    exams.forEach(exam => {
+        const done = myResults[exam.id];
+        html += done ? `
+            <div class="bg-green-50 border border-green-200 p-4 rounded-lg">
+                <div class="flex flex-wrap justify-between items-center gap-3">
+                    <div>
+                        <p class="font-bold text-lg">${esc(exam.title)}</p>
+                        <p class="text-sm text-gray-500 mt-1">${esc(exam.teacher_name)} — ${jDate(exam.created_at)} — ${pDigits(done.total)} سوال</p>
+                    </div>
+                    <button data-exam="${exam.id}" data-score="${done.score}" data-total="${done.total}" data-correct="${(done.correct || []).join(',')}" data-wrong="${(done.wrong || []).join(',')}" data-blank="${(done.blank || []).join(',')}" class="view-result-btn bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 text-sm">مشاهده کارنامه (${pDigits(done.score)} از ${pDigits(done.total)})</button>
+                </div>
+            </div>` : `
+            <div class="bg-gray-50 border p-4 rounded-lg flex flex-wrap justify-between items-center gap-3">
+                <div>
+                    <p class="font-bold text-lg">${esc(exam.title)}</p>
+                    <p class="text-sm text-gray-500 mt-1">${esc(exam.teacher_name)} — ${jDate(exam.created_at)}</p>
+                </div>
+                <button data-exam="${exam.id}" class="take-exam-btn bg-green-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-green-700">شرکت در آزمون</button>
+            </div>`;
+    });
+    html += '</div>';
+    examSection.innerHTML = html;
+    examSection.classList.remove('hidden');
+    statusSection.classList.add('hidden');
+    examSection.querySelectorAll('.take-exam-btn').forEach(btn => btn.addEventListener('click', () => loadExam(btn.dataset.exam)));
+    examSection.querySelectorAll('.view-result-btn').forEach(btn => btn.addEventListener('click', () => {
+        const r = {
+            score: +btn.dataset.score, total: +btn.dataset.total,
+            correct: btn.dataset.correct ? btn.dataset.correct.split(',').map(Number) : [],
+            wrong: btn.dataset.wrong ? btn.dataset.wrong.split(',').map(Number) : [],
+            blank: btn.dataset.blank ? btn.dataset.blank.split(',').map(Number) : [],
+        };
+        loadExamSummary(btn.dataset.exam, r);
+    }));
+}
+
+async function loadExamSummary(examId, r) {
+    try {
+        const res = await (await fetch(AZMOON_API + '?action=get_exam&exam_id=' + encodeURIComponent(examId))).json();
+        if (res.success) activeExam = res.data;
+    } catch (e) {}
+    showResult(r);
+}
+
+function renderExamForm(exam) {
+    mainHeader.querySelector('h1').textContent = exam.title;
+    mainHeader.querySelector('p').textContent = `دبیر: ${exam.teacher_name}`;
+
+    let html = `<div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+            <i class="ph-duotone ph-file-pdf text-4xl text-green-600"></i>
+            <p class="font-bold text-green-800">برای مشاهده سوالات، دفترچه آزمون را دانلود کنید.</p>
+        </div>
+        <a href="${esc(exam.pdf)}" download="${esc(exam.pdf_name || 'azmoon.pdf')}" target="_blank" class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition">دانلود</a>
+    </div>
+    <form id="student-answers-form"><div id="questions-container" class="space-y-4">`;
+
+    exam.keys.forEach((key, index) => {
+        html += `<div class="bg-gray-50 p-4 rounded-lg flex items-center justify-between"><span class="font-bold text-lg">سوال ${pDigits(index + 1)}</span><div class="flex gap-x-2 sm:gap-x-3">`;
+        [1, 2, 3, 4].forEach(opt => {
+            html += `<label class="radio-label-container cursor-pointer"><input type="radio" name="q${index}" value="${opt}" class="sr-only"><span class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-2 rounded-full font-bold text-lg transition">${pDigits(opt)}</span></label>`;
+        });
+        html += `</div></div>`;
+    });
+    html += `</div><button type="submit" class="w-full mt-8 bg-green-600 text-white py-3 rounded-lg text-lg font-bold hover:bg-green-700 transition shadow-md">ثبت نهایی و مشاهده نتیجه</button></form>`;
+    examSection.innerHTML = html;
+    examSection.classList.remove('hidden');
+    statusSection.classList.add('hidden');
+    document.getElementById('student-answers-form').addEventListener('submit', handleFormSubmit);
+}
+
+async function loadExam(examId) {
+    showStatus('در حال دریافت آزمون...');
+    try {
+        const result = await (await fetch(AZMOON_API + '?action=get_exam&exam_id=' + encodeURIComponent(examId))).json();
+        if (!result.success) throw new Error(result.message);
+        activeExam = result.data;
+        renderExamForm({ ...activeExam, keys: Array(activeExam.key_count || 0).fill(0) });
+    } catch (e) {
+        showStatus(esc(e.message || 'خطا در دریافت آزمون.'), true);
+    }
+}
+
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    if (previewMode) {
+        showStatus('در حالت پیش‌نمایش مدیریتی، ثبت پاسخ انجام نمی‌شود — نتیجه فقط با حساب دانش‌آموز ثبت می‌شود.', true, false);
+        return;
+    }
+    if (!confirm('پاسخ‌های خود را نهایی کنید؟')) return;
+    const answers = {};
+    activeExam.keys.forEach((k, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        answers[index + 1] = selected ? +selected.value : null;
+    });
+
+    const fd = new FormData();
+    fd.append('action', 'submit_answers');
+    fd.append('exam_id', activeExam.id);
+    fd.append('answers', JSON.stringify(answers));
+    fd.append('csrf_token', csrf());
+
+    try {
+        const r = await (await fetch(AZMOON_API, { method: 'POST', body: fd })).json();
+        if (!r.success) {
+            showStatus(esc(r.message), true);
+            return;
+        }
+        showResult(r.data);
+    } catch (err) {
+        showStatus('خطا در ثبت پاسخنامه.', true);
+    }
+}
+
+async function initialize() {
+    mainHeader.classList.remove('hidden');
+    resultSection.classList.add('hidden');
+    examSection.classList.add('hidden');
+    statusSection.classList.remove('hidden');
+    showStatus('در حال بررسی دسترسی...');
+
+    try {
+        const me = await (await fetch('/files/api/auth.php', { method: 'POST', body: new URLSearchParams({ action: 'me' }) })).json();
+        if (!me.success) {
+            alert('برای شرکت در آزمون، ابتدا وارد شوید.');
+            window.location.href = '/auth/login.html';
+            return;
+        }
+        if (me.data.role === 'teacher') {
+            showStatus('شما اجازه شرکت در آزمون را ندارید. صفحه آزمون دبیر: <a href="/azmoon/teacher.html" class="text-green-600 underline">اینجا</a>', true, false);
+            return;
+        }
+        if (me.data.role === 'admin') {
+            previewMode = true;
+            document.getElementById('preview-bar').classList.remove('hidden');
+            const res = await (await fetch(AZMOON_API + '?action=get_preview_exams')).json();
+            if (!res.success) throw new Error(res.message);
+            const exams = (res.data.exams || []).map(e => ({ ...e, keys: Array(e.key_count || 0).fill(0) }));
+            renderExamsList(exams, {});
+            return;
+        }
+        const res = await (await fetch(AZMOON_API + '?action=get_student_exams')).json();
+        if (!res.success) throw new Error(res.message);
+        const exams = (res.data.exams || []).map(e => ({ ...e, keys: Array(e.key_count || 0).fill(0) }));
+        const myResults = {};
+        Object.values(res.data.my_results || {}).forEach(r => { myResults[r.exam_id] = r; });
+        renderExamsList(exams, myResults);
+    } catch (e) {
+        showStatus(esc(e.message || 'خطا.'), true);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initialize);
+</script>
+</body>
+</html>

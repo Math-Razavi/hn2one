@@ -1,0 +1,412 @@
+[
+    {
+        "id": 1,
+        "src": "/files/uploads/gallery/01-sardar-01.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 2,
+        "src": "/files/uploads/gallery/01-sardar-02.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 3,
+        "src": "/files/uploads/gallery/01-sardar-03.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 4,
+        "src": "/files/uploads/gallery/01-sardar-04.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 5,
+        "src": "/files/uploads/gallery/01-sardar-05.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 6,
+        "src": "/files/uploads/gallery/01-sardar-06.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 7,
+        "src": "/files/uploads/gallery/01-sardar-07.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 8,
+        "src": "/files/uploads/gallery/01-sardar-08.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 9,
+        "src": "/files/uploads/gallery/01-sardar-09.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 10,
+        "src": "/files/uploads/gallery/01-sardar-10.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 11,
+        "src": "/files/uploads/gallery/01-sardar-11.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 12,
+        "src": "/files/uploads/gallery/01-sardar-12.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 13,
+        "src": "/files/uploads/gallery/01-sardar-13.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 14,
+        "src": "/files/uploads/gallery/01-sardar-14.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 15,
+        "src": "/files/uploads/gallery/01-sardar-15.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 16,
+        "src": "/files/uploads/gallery/01-sardar-16.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 17,
+        "src": "/files/uploads/gallery/01-sardar-17.jpg",
+        "section": "سردرب و ورودی مدرسه"
+    },
+    {
+        "id": 18,
+        "src": "/files/uploads/gallery/02-hayat-01.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 19,
+        "src": "/files/uploads/gallery/02-hayat-02.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 20,
+        "src": "/files/uploads/gallery/02-hayat-03.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 21,
+        "src": "/files/uploads/gallery/02-hayat-04.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 22,
+        "src": "/files/uploads/gallery/02-hayat-05.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 23,
+        "src": "/files/uploads/gallery/02-hayat-06.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 24,
+        "src": "/files/uploads/gallery/02-hayat-07.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 25,
+        "src": "/files/uploads/gallery/02-hayat-08.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 26,
+        "src": "/files/uploads/gallery/02-hayat-09.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 27,
+        "src": "/files/uploads/gallery/02-hayat-10.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 28,
+        "src": "/files/uploads/gallery/02-hayat-11.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 29,
+        "src": "/files/uploads/gallery/02-hayat-12.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 30,
+        "src": "/files/uploads/gallery/02-hayat-13.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 31,
+        "src": "/files/uploads/gallery/02-hayat-14.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 32,
+        "src": "/files/uploads/gallery/02-hayat-15.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 33,
+        "src": "/files/uploads/gallery/02-hayat-16.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 34,
+        "src": "/files/uploads/gallery/02-hayat-17.jpg",
+        "section": "حیات و سالن‌های مدرسه"
+    },
+    {
+        "id": 35,
+        "src": "/files/uploads/gallery/03-lab-01.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 36,
+        "src": "/files/uploads/gallery/03-lab-02.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 37,
+        "src": "/files/uploads/gallery/03-lab-03.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 38,
+        "src": "/files/uploads/gallery/03-lab-04.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 39,
+        "src": "/files/uploads/gallery/03-lab-05.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 40,
+        "src": "/files/uploads/gallery/03-lab-06.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 41,
+        "src": "/files/uploads/gallery/03-lab-07.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 42,
+        "src": "/files/uploads/gallery/03-lab-08.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 43,
+        "src": "/files/uploads/gallery/03-lab-09.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 44,
+        "src": "/files/uploads/gallery/03-lab-10.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 45,
+        "src": "/files/uploads/gallery/03-lab-11.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 46,
+        "src": "/files/uploads/gallery/03-lab-12.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 47,
+        "src": "/files/uploads/gallery/03-lab-13.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 48,
+        "src": "/files/uploads/gallery/03-lab-14.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 49,
+        "src": "/files/uploads/gallery/03-lab-15.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 50,
+        "src": "/files/uploads/gallery/03-lab-16.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 51,
+        "src": "/files/uploads/gallery/03-lab-17.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 52,
+        "src": "/files/uploads/gallery/03-lab-18.jpg",
+        "section": "کلاس‌ها و آزمایشگاه"
+    },
+    {
+        "id": 53,
+        "src": "/files/uploads/gallery/04-library-01.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 54,
+        "src": "/files/uploads/gallery/04-library-02.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 55,
+        "src": "/files/uploads/gallery/04-library-03.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 56,
+        "src": "/files/uploads/gallery/04-library-04.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 57,
+        "src": "/files/uploads/gallery/04-library-05.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 58,
+        "src": "/files/uploads/gallery/04-library-06.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 59,
+        "src": "/files/uploads/gallery/04-library-07.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 60,
+        "src": "/files/uploads/gallery/04-library-08.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 61,
+        "src": "/files/uploads/gallery/04-library-09.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 62,
+        "src": "/files/uploads/gallery/04-library-10.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 63,
+        "src": "/files/uploads/gallery/04-library-11.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 64,
+        "src": "/files/uploads/gallery/04-library-12.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 65,
+        "src": "/files/uploads/gallery/04-library-13.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 66,
+        "src": "/files/uploads/gallery/04-library-14.jpg",
+        "section": "کتابخانه"
+    },
+    {
+        "id": 67,
+        "src": "/files/uploads/gallery/05-art-01.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 68,
+        "src": "/files/uploads/gallery/05-art-02.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 69,
+        "src": "/files/uploads/gallery/05-art-03.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 70,
+        "src": "/files/uploads/gallery/05-art-04.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 71,
+        "src": "/files/uploads/gallery/05-art-05.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 72,
+        "src": "/files/uploads/gallery/05-art-06.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 73,
+        "src": "/files/uploads/gallery/05-art-07.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 74,
+        "src": "/files/uploads/gallery/05-art-08.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 75,
+        "src": "/files/uploads/gallery/05-art-09.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 76,
+        "src": "/files/uploads/gallery/05-art-10.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 77,
+        "src": "/files/uploads/gallery/05-art-11.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 78,
+        "src": "/files/uploads/gallery/05-art-12.jpg",
+        "section": "کارگاه هنر و خلاقیت"
+    },
+    {
+        "id": 79,
+        "src": "/files/uploads/gallery/06-sport-01.jpg",
+        "section": "اتاق ورزش"
+    },
+    {
+        "id": 80,
+        "src": "/files/uploads/gallery/06-sport-02.jpg",
+        "section": "اتاق ورزش"
+    },
+    {
+        "id": 81,
+        "src": "/files/uploads/gallery/06-sport-03.jpg",
+        "section": "اتاق ورزش"
+    },
+    {
+        "id": 82,
+        "src": "/files/uploads/gallery/06-sport-04.jpg",
+        "section": "اتاق ورزش"
+    }
+]

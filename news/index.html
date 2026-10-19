@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta name="description" content="گزارشات فعالیت‌ها و اخبار دبیرستان هاشمی نژاد ۲">
+    <title>اخبار و گزارشات | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <script src="/assets/js/loading-orb.js" defer></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; height: auto; }
+        .news-card img { transition: transform .4s ease; }
+        .news-card:hover img { transform: scale(1.05); }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+    <div class="text-center mb-10">
+        <h1 class="text-3xl font-extrabold text-gray-800">« گزارشات فعالیت های دبیرستان »</h1>
+        <p class="text-gray-500 mt-2">آخرین اخبار و فعالیت‌های دبیرستان دوره اول استعدادهای درخشان شهید هاشمی نژاد ۲</p>
+    </div>
+
+    <div id="posts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="col-span-full text-center py-10 text-gray-400"><hn-orb size="46" speed="750" motion="morph" class="text-green-600"></hn-orb></div>
+    </div>
+
+    <nav id="pagination" class="flex justify-center gap-2 mt-10" aria-label="صفحه‌بندی"></nav>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/assets/js/admin-bar.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+const PER_PAGE = 9;
+async function loadPage(page = 1) {
+    const grid = document.getElementById('posts-grid');
+    grid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400"><hn-orb size="46" speed="750" motion="morph" class="text-green-600"></hn-orb></div>';
+    try {
+        const res = await fetch(`/files/api/content.php?action=get_posts&page=${page}&per=${PER_PAGE}`);
+        const result = await res.json();
+        if (!result.success || !result.data.posts.length) {
+            grid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10">هنوز گزارشی ثبت نشده است.</p>';
+            return;
+        }
+        grid.innerHTML = result.data.posts.map(p => `
+            <a href="/news/post.html?slug=${encodeURIComponent(p.slug)}" data-post-slug="${esc(p.slug)}" data-post-id="${p.id || ''}" class="news-card block bg-white rounded-2xl shadow-md overflow-hidden border hover:shadow-xl transition">
+                <div class="h-48 overflow-hidden bg-gray-100">
+                    ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-gray-300"><i class="ph-duotone ph-newspaper text-6xl"></i></div>`}
+                </div>
+                <div class="p-5">
+                    <span class="text-xs text-gray-500 flex items-center gap-1"><i class="ph-bold ph-calendar-blank"></i>${esc(p.year || jDate(p.created_at))}</span>
+                    <h3 class="font-bold text-gray-800 mt-2 leading-7">${esc(p.title)}</h3>
+                    <p class="text-sm text-gray-500 mt-2 leading-6">${esc(p.excerpt)}</p>
+                    <span class="text-green-600 text-sm font-bold mt-3 inline-flex items-center gap-1">توضیحات بیشتر <i class="ph-bold ph-caret-left"></i></span>
+                </div>
+            </a>`).join('');
+        renderPagination(result.data.page, result.data.pages);
+    } catch (e) {
+        grid.innerHTML = '<p class="col-span-full text-center text-red-500 py-10">خطا در بارگذاری گزارشات.</p>';
+    }
+}
+function renderPagination(current, pages) {
+    const nav = document.getElementById('pagination');
+    if (pages <= 1) { nav.innerHTML = ''; return; }
+    let html = '';
+    for (let i = 1; i <= pages; i++) {
+        const active = i === current;
+        html += `<button data-page="${i}" class="px-4 py-2 rounded-lg font-bold border transition ${active ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100'}">${i.toLocaleString('fa-IR')}</button>`;
+    }
+    nav.innerHTML = html;
+    nav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+        loadPage(parseInt(b.dataset.page));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }));
+}
+document.addEventListener('DOMContentLoaded', () => loadPage(1));
+</script>
+</body>
+</html>

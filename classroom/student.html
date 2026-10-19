@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>کلاس‌های مجازی | دبیرستان هاشمی نژاد ۲</title>
+    <link rel="icon" href="/files/uploads/site/logo-footer.png">
+    <script src="/assets/js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/fill/style.css">
+    <link rel="stylesheet" href="/assets/phosphor-icons/duotone/style.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
+        .header-logo { max-width: 140px; }
+        .live-dot { width: 10px; height: 10px; border-radius: 9999px; background-color: #ef4444; animation: pulse 1.2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.8); } }
+    </style>
+</head>
+<body class="text-gray-900 flex flex-col min-h-screen">
+<div id="header"></div>
+
+<main class="w-full max-w-3xl mx-auto px-4 sm:px-6 flex-grow py-10">
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+        <header id="main-header" class="text-center mb-8 border-b pb-6">
+            <h1 class="text-3xl font-extrabold text-gray-800">کلاس‌های مجازی</h1>
+            <p class="text-lg text-gray-500 mt-2">با یک کلیک وارد کلاس آنلاین شو</p>
+        </header>
+
+        <div id="preview-bar" class="hidden rounded-xl bg-indigo-50 border border-indigo-200 p-4 text-center text-sm font-bold text-indigo-700 leading-6 mb-6">
+            <i class="ph-fill ph-eye text-lg"></i> حالت پیش‌نمایش مدیریتی — وضعیت کلاس‌ها را می‌بینید؛ ورود واقعی به جلسه فقط با حساب دانش‌آموز انجام می‌شود.
+        </div>
+
+        <div id="status-section" class="text-center py-6"></div>
+        <div id="classes-section" class="hidden space-y-4"></div>
+
+        <p class="text-xs text-gray-400 text-center mt-8 leading-6">
+            لینک ورود فقط هنگام کلیک ساخته می‌شود و مستقیماً به جلسه داناپلاس می‌برد.<br>
+            اگر جلسه فعال نباشد، دکمه ورود غیرفعال است؛ چند دقیقه بعد دوباره صفحه را ببین.
+        </p>
+    </div>
+</main>
+
+<div id="footer"></div>
+<script src="/header.js"></script>
+<script src="/footer.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/breadcrumb.js"></script>
+<script>
+const VCLASS_API = '/files/api/classroom.php';
+const statusSection = document.getElementById('status-section');
+const classesSection = document.getElementById('classes-section');
+const mainHeader = document.getElementById('main-header');
+let refreshTimer = null;
+let previewMode = false;
+
+function csrf() { return localStorage.getItem('csrf_token') || ''; }
+function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+function pDigits(s) { return String(s).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+function showStatus(message, isError = false, withLoginBtn = true) {
+    const icon = isError
+        ? '<i class="ph-fill ph-x-circle text-6xl text-red-500 mb-4"></i>'
+        : '<div class="loading h-12 w-12 rounded-full border-4 border-t-green-600 border-gray-200 mx-auto mb-4" style="animation: spin 1s linear infinite;"></div>';
+    statusSection.innerHTML = `<div class="py-10">${icon}<p class="text-center font-bold text-lg ${isError ? 'text-red-600' : 'text-gray-600'}">${message}</p>${isError && withLoginBtn ? '<a href="/auth/login.html" class="inline-flex mt-6 bg-green-600 text-white px-6 py-2 rounded-lg font-bold">صفحه ورود</a>' : ''}</div>`;
+}
+
+function classCard(c) {
+    const joined = c.has_session && c.joinable;
+    const running = c.running;
+    if (previewMode) {
+        const stateChip = !c.has_session
+            ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500">بدون جلسه</span>'
+            : (running
+                ? '<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-600"><span class="live-dot"></span>در حال برگزاری</span>'
+                : '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">آماده ورود</span>');
+        return `
+        <div class="rounded-xl border p-5 ${running && c.has_session ? 'border-green-300 bg-green-50' : c.has_session ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-gray-50 opacity-90'}">
+            <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-lg font-extrabold text-gray-800">${esc(c.title)}</h3>
+                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-700">${esc(c.subject)}</span>
+                ${c.grade ? `<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700">${esc(c.grade)}</span>` : ''}
+                ${c.status === 'inactive' ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700">کلاس غیرفعال</span>' : ''}
+                ${stateChip}
+            </div>
+            <p class="text-sm text-gray-500 mt-2">${c.teacher ? 'دبیر: <b>' + esc(c.teacher) + '</b>' : ''}${typeof c.students !== 'undefined' ? ' — ' + pDigits(c.students) + ' دانش‌آموز مجاز' : ''}</p>
+            <p class="text-xs text-indigo-600 font-bold mt-2"><i class="ph-fill ph-eye"></i> ورود واقعی فقط از حساب دانش‌آموز</p>
+        </div>`;
+    }
+    return `
+    <div class="rounded-xl border p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${joined ? (running ? 'border-green-300 bg-green-50' : 'border-blue-200 bg-blue-50') : 'border-gray-200 bg-gray-50'}">
+        <div>
+            <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-lg font-extrabold text-gray-800">${esc(c.title)}</h3>
+                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-700">${esc(c.subject)}</span>
+                ${c.grade ? `<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700">${esc(c.grade)}</span>` : ''}
+                ${joined && running ? '<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-600"><span class="live-dot"></span>در حال برگزاری</span>' : ''}
+            </div>
+            <p class="text-sm text-gray-500 mt-2">${c.teacher ? 'دبیر: <b>' + esc(c.teacher) + '</b>' : ''}</p>
+        </div>
+        ${joined
+            ? `<button data-class="${esc(c.id)}" class="join-btn bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 shadow flex items-center gap-2 shrink-0 transition ${running ? 'animate-pulse' : ''}"><i class="ph-fill ph-signpost text-xl"></i>ورود به کلاس</button>`
+            : `<span class="text-sm font-bold text-gray-400 flex items-center gap-2 shrink-0"><i class="ph-duotone ph-clock-countdown text-2xl"></i>جلسه فعال نیست</span>`}
+    </div>`;
+}
+
+async function loadMyClasses() {
+    try {
+        const url = previewMode ? (VCLASS_API + '?action=my_classes&preview=1') : (VCLASS_API + '?action=my_classes');
+        const res = await (await fetch(url)).json();
+        if (!res.success) { showStatus(esc(res.message || 'خطا.'), true); return; }
+        if (!res.dp_ready || res.transport_error) {
+            showStatus(esc(res.transport_error || 'اتصال به کلاس‌های مجازی تنظیم نشده است.'), true, false);
+            return;
+        }
+        const list = res.classes || [];
+        if (!list.length) {
+            showStatus(previewMode
+                ? 'هنوز کلاس مجازی‌ای ساخته نشده است.'
+                : 'ثبت‌نام کلاس مجازی برای تو انجام نشده است. وقتی مدرسه دسترسی‌ات را تخصیص دهد، اینجا می‌بینی.', true, false);
+            return;
+        }
+        statusSection.classList.add('hidden');
+        classesSection.innerHTML = list.map(classCard).join('');
+        classesSection.classList.remove('hidden');
+        classesSection.querySelectorAll('.join-btn').forEach(btn => btn.addEventListener('click', () => doJoin(btn.dataset.class, btn)));
+    } catch (e) {
+        showStatus('خطا در دریافت کلاس‌ها.', true, false);
+    }
+}
+
+async function doJoin(classId, btn) {
+    btn.disabled = true;
+    const old = btn.innerHTML;
+    btn.innerHTML = '<i class="ph-bold ph-spinner-circle text-xl animate-spin"></i><span>در حال ورود...</span>';
+    try {
+        const fd = new FormData();
+        fd.append('action', 'join');
+        fd.append('class_id', classId);
+        fd.append('csrf_token', csrf());
+        const r = await (await fetch(VCLASS_API, { method: 'POST', body: fd })).json();
+        if (r.success && r.url) {
+            window.location.href = r.url; // هدایت استاندارد به /api/jin در آدرس داناپلاس
+            return;
+        }
+        showStatus(esc(r.message || 'ورود ناموفق بود.'), true, false);
+    } catch (e) {
+        showStatus('خطا در ارتباط با سرور.', true, false);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = old;
+    }
+}
+
+async function initialize() {
+    try {
+        const me = await (await fetch('/files/api/auth.php', { method: 'POST', body: new URLSearchParams({ action: 'me' }) })).json();
+        if (!me.success) {
+            alert('برای ورود به کلاس، ابتدا وارد شوید.');
+            window.location.href = '/auth/login.html';
+            return;
+        }
+        if (me.data.role === 'teacher') {
+            showStatus('این صفحه مخصوص دانش‌آموزان است. شما با نقش «دبیر» وارد شده‌اید.', true, false);
+            return;
+        }
+        if (me.data.role === 'admin') {
+            previewMode = true;
+            document.getElementById('preview-bar').classList.remove('hidden');
+            mainHeader.querySelector('p').textContent = 'پیش‌نمایش مدیریتی';
+            await loadMyClasses();
+            if (refreshTimer) clearInterval(refreshTimer);
+            refreshTimer = setInterval(loadMyClasses, 30000);
+            return;
+        }
+        if ((me.data.active ?? true) === false) {
+            showStatus('حساب شما غیرفعال شده است. با مدیر مدرسه تماس بگیرید.', true, false);
+            return;
+        }
+        await loadMyClasses();
+        if (refreshTimer) clearInterval(refreshTimer);
+        refreshTimer = setInterval(loadMyClasses, 30000); // وضعیت جلسات هر ۳۰ ثانیه
+    } catch (e) {
+        showStatus('خطا در بررسی دسترسی.', true);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initialize);
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading { animation: spin 1s linear infinite; }
+</style>
+</body>
+</html>
