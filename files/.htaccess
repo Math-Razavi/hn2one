@@ -1,0 +1,12 @@
+# محافظت از داده‌های خصوصی — این فایل را حذف نکنید
+Options -Indexes
+
+<FilesMatch "\.(json|log|txt|md)$">
+    Require all denied
+</FilesMatch>
+
+# مسدودسازی دسترسی مستقیم به پوشه data و users
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(data|users)(/.*)?$ - [F,L]
+</IfModule>
